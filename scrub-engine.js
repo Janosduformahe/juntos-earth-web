@@ -87,7 +87,7 @@ function mountScrollWorld(container, config) {
   const SEGMENTS = [];
   SECTIONS.forEach((s, i) => {
     const dive = { kind: 'dive', si: i, clip: s.clip, clipM: s.clipMobile, still: s.still, stillM: s.stillMobile,
-                   accent: s.accent, w: s.scroll || DIVE_W, linger: s.linger || 0 };
+                   accent: s.accent, w: s.scroll || DIVE_W, linger: s.linger || 0, focus: (s.focus != null ? s.focus : null) };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -176,6 +176,14 @@ function mountScrollWorld(container, config) {
   // (where the copy peaks) and moves quicker near the seams. L=0 linear, L=1 full
   // mid-scene pause. f(0)=0, f(1)=1 always, so seam frames are untouched.
   const lingerEase = (x, L) => { L = clamp(L); const c = x - 0.5; return (1 - L) * x + L * (4 * c * c * c + 0.5); };
+  // Per-section `focus` (0..1): monotone remap that puts clip-time `F` at mid-band —
+  // exactly where the copy peaks — and dwells there (zero velocity at the midpoint).
+  // f(0)=0, f(1)=1 so the seam frames are untouched and the chain stays frame-locked.
+  const focusEase = (x, F) => {
+    F = clamp(F);
+    if (x <= 0.5) { const u = 1 - 2 * x; return F * (1 - u * u * u); }
+    const u = 2 * x - 1; return F + (1 - F) * u * u * u;
+  };
   let vh = window.innerHeight, stageX = 0, totalW = 0, activeIndex = -1, ticking = false;
   let laidOutW = window.innerWidth;   // width the current layout was computed at (see onResize)
 
@@ -229,7 +237,7 @@ function mountScrollWorld(container, config) {
       const s = SEGMENTS[i];
       if (y > s.start - 1.6 * vh && y < s.end + 1.6 * vh) loadClip(s);
       const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
-      s.target = s.linger ? lingerEase(local, s.linger) : local;
+      s.target = s.focus != null ? focusEase(local, s.focus) : (s.linger ? lingerEase(local, s.linger) : local);
       let outside = 0;
       if (y < s.start) outside = s.start - y; else if (y > s.end) outside = y - s.end;
       const op = smooth(1 - outside / fade);

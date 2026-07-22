@@ -28,7 +28,31 @@
        The engine re-requests the same URL and hits the browser cache. -->
   <div id="jeLoader" role="status" aria-label="Loading Juntos Earth">
     <div class="je-loader__inner">
-      <span class="je-loader__mark"></span>
+      <!-- The motto, literally: three seeds sprout as the film downloads.
+           Stems use pathLength=100 so stroke-dashoffset maps 1:1 to percent. -->
+      <svg class="je-loader__plants" viewBox="0 0 260 150" aria-hidden="true">
+        <g class="je-plant" data-from="0" data-to="55">
+          <ellipse class="je-seed" cx="60" cy="141" rx="7" ry="5" />
+          <path class="je-stem" pathLength="100" d="M60,140 C60,110 52,96 55,72 C57,56 64,48 62,34" />
+          <path class="je-leaf je-leaf--l" d="M56,96 C42,92 36,80 38,70 C50,74 57,84 56,96 Z" />
+          <path class="je-leaf je-leaf--r" d="M59,62 C71,58 79,48 78,38 C67,41 60,51 59,62 Z" />
+          <circle class="je-bud" cx="62" cy="32" r="5" />
+        </g>
+        <g class="je-plant" data-from="15" data-to="75">
+          <ellipse class="je-seed" cx="130" cy="141" rx="7" ry="5" />
+          <path class="je-stem" pathLength="100" d="M130,140 C130,112 138,94 134,70 C131,52 124,44 127,26" />
+          <path class="je-leaf je-leaf--l" d="M132,100 C118,98 110,88 111,77 C123,80 131,89 132,100 Z" />
+          <path class="je-leaf je-leaf--r" d="M133,58 C146,55 154,44 152,34 C141,37 134,47 133,58 Z" />
+          <circle class="je-bud" cx="127" cy="24" r="5.5" />
+        </g>
+        <g class="je-plant" data-from="35" data-to="100">
+          <ellipse class="je-seed" cx="200" cy="141" rx="7" ry="5" />
+          <path class="je-stem" pathLength="100" d="M200,140 C200,114 192,98 196,76 C199,58 206,50 203,38" />
+          <path class="je-leaf je-leaf--l" d="M196,102 C182,98 175,86 177,76 C189,80 196,90 196,102 Z" />
+          <path class="je-leaf je-leaf--r" d="M200,66 C212,62 220,52 219,42 C208,45 201,55 200,66 Z" />
+          <circle class="je-bud" cx="203" cy="36" r="5" />
+        </g>
+      </svg>
       <strong>Juntos Earth</strong>
       <em>The seeds will grow</em>
       <div class="je-loader__bar"><i id="jeLoaderFill"></i></div>
@@ -40,8 +64,15 @@
     #jeLoader.is-done { opacity: 0; pointer-events: none; }
     .je-loader__inner { display: flex; flex-direction: column; align-items: center; gap: 10px; color: #FFFEF5; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; transition: transform .65s ease; }
     #jeLoader.is-done .je-loader__inner { transform: scale(1.06); }
-    .je-loader__mark { width: 34px; height: 40px; border-radius: 10px 10px 14px 14px; background: linear-gradient(160deg, #F8DB3F, #A5BC39); box-shadow: 0 10px 30px rgba(248, 219, 63, .35); animation: je-pulse 1.6s ease-in-out infinite; }
-    @keyframes je-pulse { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-7px) } }
+    .je-loader__plants { width: min(260px, 62vw); height: auto; overflow: visible; }
+    .je-seed { fill: #F8DB3F; }
+    .je-stem { fill: none; stroke: #A5BC39; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 100; stroke-dashoffset: 100; }
+    .je-leaf { fill: #D2E18B; opacity: 0; transform: scale(.2); transform-origin: center; transform-box: fill-box; transition: opacity .5s ease, transform .6s cubic-bezier(.2, 1.4, .4, 1); }
+    .je-leaf--r { fill: #44843D; }
+    .je-bud { fill: #F27E9E; opacity: 0; transform: scale(.2); transform-origin: center; transform-box: fill-box; transition: opacity .45s ease, transform .55s cubic-bezier(.2, 1.5, .4, 1); }
+    .je-plant.is-leafy .je-leaf, .je-plant.is-budding .je-bud { opacity: 1; transform: scale(1); }
+    .je-plant .je-seed { animation: je-seedbob 1.8s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    @keyframes je-seedbob { 0%, 100% { transform: scale(1) } 50% { transform: scale(1.12) } }
     .je-loader__inner strong { font-family: 'Bricolage Grotesque', Georgia, serif; font-weight: 700; font-size: 1.6rem; margin-top: 8px; }
     .je-loader__inner em { font-style: normal; font-size: .82rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(255, 254, 245, .55); }
     .je-loader__bar { width: min(240px, 60vw); height: 3px; border-radius: 3px; background: rgba(255, 254, 245, .14); overflow: hidden; margin-top: 18px; }
@@ -251,7 +282,7 @@
     .je-scrolly { position: relative; }
     .je-step--intro .je-step__card--bare { background: color-mix(in srgb, #FFFEF5 46%, transparent); backdrop-filter: blur(10px); border: 0; box-shadow: none; padding: clamp(1.2rem, 2vw, 1.8rem); border-radius: 26px; width: min(48vw, 580px); text-align: left; }
     .je-step--intro .je-nutri__title { text-align: left; }
-    .je-scrolly__stage { position: sticky; top: 0; height: 100vh; overflow: hidden; pointer-events: none; }
+    .je-scrolly__stage { position: sticky; top: 0; height: 100vh; overflow: hidden; pointer-events: none; perspective: 1300px; }
     .je-scrolly__pack { position: absolute; left: 50%; top: 50%; width: min(38vw, 540px); will-change: transform; }
     .je-scrolly__img { position: absolute; inset: 0; width: 100%; height: auto; display: block; filter: drop-shadow(0 30px 40px rgba(10, 46, 25, .28)); }
     .je-scrolly__img.is-lamb { position: relative; }   /* gives the wrap its height */
@@ -259,6 +290,8 @@
     .je-scrolly__shadow { display: none; }
     .je-scrolly__steps { position: relative; margin-top: -100vh; z-index: 2; }
     .je-step { min-height: 68vh; display: flex; align-items: center; padding: 0 clamp(1.2rem, 7vw, 7rem); }
+    /* extra dwell on the two variant swaps (can + beef) so the flip breathes */
+    .je-step:nth-child(3), .je-step:nth-child(4) { min-height: 92vh; }
     .je-step[data-side="left"]  { justify-content: flex-start; }
     .je-step[data-side="right"] { justify-content: flex-end; }
     .je-step__card { width: min(44vw, 480px); text-align: left; background: rgba(255, 255, 255, .82); backdrop-filter: blur(8px); border: 1.5px solid rgba(10, 46, 25, .08); border-radius: 26px; padding: clamp(1.4rem, 2.6vw, 2.4rem); box-shadow: 0 18px 50px rgba(10, 46, 25, .1); opacity: 0; transform: translateY(34px); will-change: opacity, transform; }
@@ -378,12 +411,23 @@
       const clips = names.map((n) => `assets/vid/${n}${mobile ? '-m' : ''}.mp4`);
       const loadedB = new Array(clips.length).fill(0);
       const totalB = new Array(clips.length).fill(0);
+      const plants = [...loader.querySelectorAll('.je-plant')];
+      const grow = (p) => {
+        for (const g of plants) {
+          const from = +g.dataset.from, to = +g.dataset.to;
+          const lp = Math.max(0, Math.min(1, (p - from) / (to - from)));   /* staggered growth */
+          g.querySelector('.je-stem').style.strokeDashoffset = (100 - lp * 100).toFixed(1);
+          g.classList.toggle('is-leafy', lp > 0.45);
+          g.classList.toggle('is-budding', lp > 0.85);
+        }
+      };
       const update = () => {
         const T = totalB.reduce((a, b) => a + b, 0);
         if (!T) return;
         const L = loadedB.reduce((a, b) => a + b, 0);
         const p = Math.min(100, Math.floor((L / T) * 100));
         fill.style.width = p + '%'; pct.textContent = p + '%';
+        grow(p);
       };
       const bail = setTimeout(done, 90000);   /* never trap the visitor on a slow link */
       try {
@@ -398,7 +442,7 @@
             update();
           }
         }));
-        fill.style.width = '100%'; pct.textContent = '100%';
+        fill.style.width = '100%'; pct.textContent = '100%'; grow(100);
       } catch (e) { /* reveal regardless — the engine has its own poster fallbacks */ }
       clearTimeout(bail);
       setTimeout(done, 350);
@@ -445,7 +489,7 @@
           clip: 'assets/vid/obrador.mp4',
           clipMobile: 'assets/vid/obrador-m.mp4',
           accent: '#FF913F',
-          scroll: 1.6, linger: 0.4,
+          scroll: 1.6, focus: 0.82,   /* kitchen only fully reveals late in the leg */
           eyebrow: 'Simmered for 24 hours',
           title: 'From pasture to pot.',
           body: 'Pasture-raised bones, organic vegetables, rosemary and thyme — slow-simmered into a broth with 20 g of protein per serving.',
@@ -457,7 +501,7 @@
           clip: 'assets/vid/europa.mp4',
           clipMobile: 'assets/vid/europa-m.mp4',
           accent: '#56AAE8',
-          scroll: 1.4,
+          scroll: 1.5, focus: 0.8,    /* rush the window-exit (continuity wobble), dwell on the dusk aerial */
           eyebrow: 'Partners we trust',
           title: 'A web of farms across Europe.',
           body: 'We work with organic and regenerative producers across the continent — a supply chain that gives back more than it takes.',
@@ -469,7 +513,7 @@
           clip: 'assets/vid/mundo.mp4',
           clipMobile: 'assets/vid/mundo-m.mp4',
           accent: '#B9E8B4',
-          scroll: 1.5, linger: 0.35,
+          scroll: 1.5, focus: 0.85,   /* dwell on the full planet reveal */
           eyebrow: 'EveryDay Regenerative',
           title: 'One island can start a world.',
           body: 'Every pouch sold funds more regenerative hectares — Ibiza today, Europe tomorrow, the whole planet after that.',
@@ -481,7 +525,7 @@
           clip: 'assets/vid/caldo.mp4',
           clipMobile: 'assets/vid/caldo-m.mp4',
           accent: '#F8DB3F',
-          scroll: 2.0, linger: 0.5,
+          scroll: 2.0, focus: 0.85,   /* dwell on the bodegón with the real pack */
           eyebrow: 'Our first product',
           title: 'Organic bone broth, ready to enjoy.',
           body: 'Lamb or beef, rosemary and thyme, pasture-raised and simmered for 24 hours. The first taste of a regenerated world.',
@@ -503,11 +547,13 @@
     (function () {
       const BANDS = [            /* [startVh, widthVh, fraction-of-band] */
         [0,   1.8, null],        /* The Farm → very top: crisp establishing still */
-        [1.8, 1.4, 0.5],         /* The Living Soil → mid (confirmed good) */
-        [3.2, 1.6, 0.92],        /* The Kitchen → kitchen fully revealed */
-        [4.8, 1.4, 0.85],        /* Across Europe → the high dusk aerial */
-        [6.2, 1.5, 0.96],        /* The Whole World → the full planet reveal (last beat of the leg) */
-        [7.7, 2.0, 0.9],         /* The Broth → the bodegón at rest */
+        /* With per-section `focus` remaps, mid-band IS each scene's hero moment
+           (europa's scroll grew 1.4→1.5, shifting the later bands). */
+        [1.8, 1.4, 0.5],         /* The Living Soil */
+        [3.2, 1.6, 0.5],         /* The Kitchen */
+        [4.8, 1.5, 0.5],         /* Across Europe */
+        [6.3, 1.5, 0.5],         /* The Whole World */
+        [7.8, 2.0, 0.5],         /* The Broth */
       ];
       const targetFor = (i) => {
         const [s, w, f] = BANDS[i];
@@ -591,22 +637,22 @@
         const amp = phone.matches ? 0 : Math.min(innerWidth * 0.24, 460);
         const x = (sideOf(i) * (1 - t) + sideOf(i + 1) * t) * amp;
         const r = Math.sin(pf * Math.PI) * 5;
-        /* three-way variant swap: lamb → chicken (can) → beef. Narrow windows + snappy
-           lerp = a quick clean switch, not a long double-exposure; a small scale dip
-           at each swap point sells it as a "pop" instead of a morph. */
-        const c1 = ease((pf - 1.45) / 0.25), c2 = ease((pf - 2.45) / 0.25);
+        /* three-way variant swap: lamb → chicken (can) → beef, as a CARD FLIP.
+           The pack turns edge-on (90°), the image switches while invisible, and it
+           turns back — no cross-silhouette ghosting between pouch and can. */
+        const w1 = clamp((pf - 1.35) / 0.4, 0, 1), w2 = clamp((pf - 2.35) / 0.4, 0, 1);
         cur.x += (x - cur.x) * 0.18; cur.r += (r - cur.r) * 0.18;
-        cur.c1 = (cur.c1 || 0) + (c1 - (cur.c1 || 0)) * 0.45;
-        cur.c2 = (cur.c2 || 0) + (c2 - (cur.c2 || 0)) * 0.45;
-        const dip = 0.07 * (Math.sin(Math.PI * clamp((pf - 1.45) / 0.25, 0, 1)) + Math.sin(Math.PI * clamp((pf - 2.45) / 0.25, 0, 1)));
+        const flip = Math.sin(Math.PI * w1) + Math.sin(Math.PI * w2);   /* 0→1→0 per window */
+        const rotY = 90 * Math.min(1, flip);
+        const show = w2 >= 0.5 ? 'beef' : (w1 >= 0.5 ? 'chicken' : 'lamb');
+        lamb.style.opacity = show === 'lamb' ? 1 : 0;
+        chicken.style.opacity = show === 'chicken' ? 1 : 0;
+        beef.style.opacity = show === 'beef' ? 1 : 0;
         /* film→section dissolve: cream fades in across the intro step; the pouch "lands"
            with a subtle settling scale over the film's own pack */
         cream.style.opacity = ease(pf / 0.7).toFixed(3);
-        const sc = 1.08 - 0.08 * ease(pf / 0.8) - dip;
-        pack.style.transform = `translate(calc(-50% + ${cur.x.toFixed(1)}px), -50%) rotate(${cur.r.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
-        lamb.style.opacity = (1 - cur.c1).toFixed(3);
-        chicken.style.opacity = Math.min(cur.c1, 1 - cur.c2).toFixed(3);
-        beef.style.opacity = cur.c2.toFixed(3);
+        const sc = 1.08 - 0.08 * ease(pf / 0.8) - 0.05 * Math.min(1, flip);
+        pack.style.transform = `translate(calc(-50% + ${cur.x.toFixed(1)}px), -50%) rotate(${cur.r.toFixed(2)}deg) scale(${sc.toFixed(3)}) rotateY(${rotY.toFixed(1)}deg)`;
         for (const c of cards) {
           const cr = c.getBoundingClientRect();
           const d = Math.abs(cr.top + cr.height / 2 - vh / 2) / (vh * 0.5);

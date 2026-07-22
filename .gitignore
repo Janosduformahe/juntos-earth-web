@@ -1,0 +1,7 @@
+# private source material — not for the public site repo
+downlaodbyjanos/
+.agents/
+skills-lock.json
+.claude/
+__pycache__/
+*.log

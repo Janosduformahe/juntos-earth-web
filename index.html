@@ -1,0 +1,542 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Juntos Earth — from one island to the whole world</title>
+  <meta name="description" content="Scroll to fly from a regenerative farm in Ibiza to the whole world. Juntos Earth — EveryDay Regenerative. Organic bone broth, simmered for 24 hours." />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B1%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Brand fonts are Margo Serif / Warbler / DM Sans (licensed). Web stand-ins:
+       Bricolage Grotesque (display) + Plus Jakarta Sans (body) — swap via the CSS vars below. -->
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    /* Juntos Earth brand kit (Brand Development V.1, 2026) */
+    :root, .sw-root {
+      --sw-bg: #0A2E19;            /* deep forest green — premium dark, matches dusk/space legs */
+      --sw-ink: #FFFEF5;           /* brand cream */
+      --sw-ink-soft: rgba(255, 254, 245, .72);
+      --sw-accent: #A5BC39;        /* olive lime — per-section accents override at runtime */
+      --sw-font-display: 'Bricolage Grotesque', 'Margo Serif', Georgia, serif;
+      --sw-font-body: 'Plus Jakarta Sans', 'DM Sans', system-ui, sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="top"></div>
+  <div id="world"></div>
+
+  <!-- Post-film flow: nutrition (young health buyer) + real-farm closer.
+       relative + z-index 200: the engine's sky/stage/copy layers are position:fixed (z 0-20);
+       static content would paint behind them and never be seen. -->
+  <div class="je-after">
+
+    <section class="je-nutri" id="inside" aria-label="What is inside the broth">
+      <!-- Scrollytelling: sticky stage, the pouch travels side to side and swaps variants.
+           The heading is step 0 INSIDE the stage so the pouch never leaves the screen
+           between the film's final frame and the property tour. -->
+      <div class="je-scrolly" id="jeScrolly">
+        <div class="je-scrolly__stage">
+          <span class="je-scrolly__cream" id="jeCream"></span>
+          <div class="je-scrolly__pack" id="jePack">
+            <img class="je-scrolly__img is-lamb" src="assets/pack-lamb-cut.png" alt="Juntos Earth Lamb Bone Broth pouch — rosemary and thyme" />
+            <img class="je-scrolly__img is-chicken" src="assets/pack-chicken-cut.png" alt="Juntos Earth Chicken Bone Broth can — turmeric and black pepper" />
+            <img class="je-scrolly__img is-beef" src="assets/pack-beef-cut.png" alt="Juntos Earth Beef Bone Broth pouch — turmeric and black pepper" />
+            <span class="je-scrolly__shadow"></span>
+          </div>
+        </div>
+        <div class="je-scrolly__steps">
+          <header class="je-step je-step--intro" data-side="left">
+            <div class="je-step__card je-step__card--bare">
+              <p class="je-nutri__eyebrow">What's inside every sip</p>
+              <h2 class="je-nutri__title">Fuel that happens<br />to taste like home.</h2>
+              <p class="je-nutri__lead">Keep scrolling — the pouch will walk you through it.</p>
+            </div>
+          </header>
+          <article class="je-step" data-side="left">
+            <div class="je-step__card">
+              <p class="je-step__eyebrow">Rosemary &amp; thyme</p>
+              <h3>Lamb Bone Broth</h3>
+              <p><strong>20 g of clean protein</strong> per 350 ml pouch, and a natural <strong>source of collagen</strong> — simmered for 24 hours, never concentrated.</p>
+              <ul><li>20 g protein</li><li>Collagen</li><li>24 h simmer</li></ul>
+            </div>
+          </article>
+          <article class="je-step" data-side="right">
+            <div class="je-step__card">
+              <p class="je-step__eyebrow">Turmeric &amp; black pepper · in a can</p>
+              <h3>Chicken Bone Broth</h3>
+              <p>Light, bright and first-timer friendly — loaded with <strong>glycine and proline</strong>, the amino acids your skin, joints and gut love. Crack it open anywhere.</p>
+              <ul><li>Amino acids</li><li>Gut friendly</li><li>Ready-to-drink can</li></ul>
+            </div>
+          </article>
+          <article class="je-step" data-side="left">
+            <div class="je-step__card">
+              <p class="je-step__eyebrow">Turmeric &amp; black pepper</p>
+              <h3>Beef Bone Broth</h3>
+              <p>Same slow ritual, deeper flavour — and the minerals that do the quiet work: <strong>calcium, magnesium, phosphorus &amp; potassium</strong>.</p>
+              <ul><li>Minerals</li><li>Turmeric</li><li>Deep flavour</li></ul>
+            </div>
+          </article>
+          <article class="je-step" data-side="right">
+            <div class="je-step__card">
+              <p class="je-step__eyebrow">Nothing you don't need</p>
+              <h3>0 g added sugar.</h3>
+              <p>Zero additives, zero preservatives. <strong>Keto &amp; paleo friendly</strong>, gluten-free, low-calorie — from pasture-raised animals on regenerative farms.</p>
+              <ul><li>Keto · Paleo</li><li>Gluten-free</li><li>Pasture-raised</li></ul>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <p class="je-nutri__note">Warm it, sip it, cook with it — breakfast broth is a personality trait now.</p>
+    </section>
+
+    <!-- Shop: swap the href placeholders for your real Shopify product URLs.
+         Prices are placeholders too — set the real ones before launch. -->
+    <section class="je-shop" id="shop" aria-label="Buy the broth">
+      <p class="je-nutri__eyebrow">Straight from the farm</p>
+      <h2 class="je-shop__title">Take the journey home.</h2>
+      <p class="je-shop__lead">Three broths, one slow ritual: pasture-raised bones, organic vegetables and 24 quiet hours. Pick your character.</p>
+      <div class="je-shop__grid">
+        <article class="je-shop__card">
+          <span class="je-shop__tag">The classic</span>
+          <img src="assets/pack-lamb-cut.png" alt="Lamb Bone Broth pouch" loading="lazy" />
+          <h3>Lamb Bone Broth</h3>
+          <p>Rosemary &amp; thyme · 350 ml pouch</p>
+          <p class="je-shop__flavour">Deep, herby and grounding — the original sipper for slow mornings.</p>
+          <div class="je-shop__row">
+            <span class="je-shop__price">8,50&nbsp;€</span>
+            <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/lamb-bone-broth">Buy now</a>
+          </div>
+        </article>
+        <article class="je-shop__card">
+          <span class="je-shop__tag je-shop__tag--pink">New · in a can</span>
+          <img src="assets/pack-chicken-cut.png" alt="Chicken Bone Broth can" loading="lazy" />
+          <h3>Chicken Bone Broth</h3>
+          <p>Turmeric &amp; black pepper · 350 ml can</p>
+          <p class="je-shop__flavour">Light, bright and ready anywhere — crack it open post-gym or mid-hike.</p>
+          <div class="je-shop__row">
+            <span class="je-shop__price">7,90&nbsp;€</span>
+            <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/chicken-bone-broth">Buy now</a>
+          </div>
+        </article>
+        <article class="je-shop__card">
+          <span class="je-shop__tag je-shop__tag--orange">The bold one</span>
+          <img src="assets/pack-beef-cut.png" alt="Beef Bone Broth pouch" loading="lazy" />
+          <h3>Beef Bone Broth</h3>
+          <p>Turmeric &amp; black pepper · 350 ml pouch</p>
+          <p class="je-shop__flavour">Rich, golden and gently spiced — the post-workout comfort cup.</p>
+          <div class="je-shop__row">
+            <span class="je-shop__price">8,50&nbsp;€</span>
+            <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/beef-bone-broth">Buy now</a>
+          </div>
+        </article>
+      </div>
+      <aside class="je-shop__bundle">
+        <div class="je-shop__bundle-imgs">
+          <img src="assets/pack-lamb-cut.png" alt="" loading="lazy" />
+          <img src="assets/pack-chicken-cut.png" alt="" loading="lazy" />
+          <img src="assets/pack-beef-cut.png" alt="" loading="lazy" />
+        </div>
+        <div class="je-shop__bundle-text">
+          <h3>The Farm Trio</h3>
+          <p>One of each — taste the whole journey and find your favourite. <strong>Save 10%.</strong></p>
+        </div>
+        <div class="je-shop__bundle-buy">
+          <span class="je-shop__price"><s>24,90&nbsp;€</s> 22,40&nbsp;€</span>
+          <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/the-farm-trio">Get the trio</a>
+        </div>
+      </aside>
+      <ul class="je-shop__perks">
+        <li>🚚 <strong>Free shipping</strong> on orders over 30&nbsp;€</li>
+        <li>🔁 <strong>Subscribe &amp; save 15%</strong> — pause or cancel anytime</li>
+        <li>🌱 <strong>Every order</strong> funds new regenerative hectares</li>
+      </ul>
+      <p class="je-shop__meta">Ships across Europe · Secure checkout by Shopify</p>
+    </section>
+
+    <!-- Footer + podcast, one cohesive closer. The real wall IS the show's identity.
+         Swap the # links for real show URLs at launch. -->
+    <footer class="je-footer" id="podcast">
+      <div class="je-footer__grid">
+        <img class="je-footer__photo" src="assets/seeds-will-grow.jpg" alt="A whitewashed wall at the real Juntos Earth farm in Ibiza, hand-painted with the words THE SEEDS WILL GROW" loading="lazy" />
+        <div class="je-footer__text">
+          <h2>The seeds<br />will grow.</h2>
+          <p>It's painted on a wall at our farm in Ibiza — and it's the whole plan. One island, then Europe, then everywhere. Now it's also a podcast.</p>
+          <div class="je-podcast">
+            <div class="je-podcast__host">
+              <span class="je-podcast__avatar" aria-hidden="true">FH</span>
+              <p><strong>The Seeds Will Grow</strong><br />Hosted by <strong>Finn Harris</strong>, co-founder of Juntos Earth — conversations with the farmers, chefs and soil nerds regenerating Europe.</p>
+            </div>
+            <ul class="je-podcast__eps">
+              <li><span>EP 01</span> The farm under the pines — regenerating a finca in Ibiza</li>
+              <li><span>EP 02</span> Bones, broth and the case for slow food</li>
+              <li><span>EP 03</span> Partners we trust — farming Europe's future</li>
+            </ul>
+            <div class="je-podcast__links">
+              <a href="#">Spotify</a>
+              <a href="#">Apple Podcasts</a>
+              <a href="#">YouTube</a>
+              <span>First episodes coming soon</span>
+            </div>
+          </div>
+          <a class="je-footer__cta" href="#top">Fly the journey again ↑</a>
+        </div>
+      </div>
+      <div class="je-footer__bottom">
+        <span>© 2026 Juntos Earth</span>
+        <span>EveryDay Regenerative</span>
+        <span>Ibiza, Spain</span>
+      </div>
+    </footer>
+
+  </div>
+  <style>
+    /* The engine injects html,body{overflow-x:hidden} which turns body into a scroll
+       container and BREAKS position:sticky. `clip` clips the same without doing that. */
+    html, body { overflow-x: clip !important; }
+    html { scroll-behavior: smooth; }   /* anchor jumps fly through the film instead of teleporting */
+
+    /* Hold the film's final frame on screen once the finale is reached, so the nutrition
+       section slides OVER the bodegón instead of over an empty green gap. The engine
+       writes inline opacity every frame; !important CSS outranks it. */
+    #world.je-hold .sw-scene:last-of-type { opacity: 1 !important; }
+
+    /* Fade the film's pinned copy (06/06 + CTA) as the nutrition section arrives,
+       so it doesn't stack under the incoming heading. */
+    .sw-copylayer { transition: opacity .45s ease; }
+    #world.je-copy-off .sw-copylayer { opacity: 0 !important; pointer-events: none !important; }
+    /* nav-jump copy hold: outranks the engine's per-frame inline opacity */
+    #world .sw-copy.je-force { opacity: 1 !important; transition: opacity .3s; }
+
+    .je-after { position: relative; z-index: 200; font-family: var(--sw-font-body); }
+
+    /* Transparent section: the held film frame stays fullscreen behind it and the cream
+       backdrop dissolves in via the stage overlay — no hard wipe line. */
+    .je-nutri { background: transparent; color: #0A2E19; padding: 0; text-align: center; }
+    .je-scrolly__cream { position: absolute; inset: 0; background: #FFFEF5; opacity: 0; will-change: opacity; }
+    .je-nutri__eyebrow { font-family: var(--sw-font-display); font-weight: 700; font-size: .82rem; letter-spacing: .18em; text-transform: uppercase; color: #44843D; margin: 0; }
+    .je-nutri__title { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(2rem, 4.6vw, 3.6rem); line-height: 1.04; margin: 14px 0 0; letter-spacing: -.01em; }
+    .je-nutri__lead { max-width: 52ch; margin: 18px 0 0; font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.6; color: rgba(10, 46, 25, .75); }
+    .je-nutri__note { margin: 0; font-size: .95rem; color: rgba(10, 46, 25, .55); padding: clamp(2rem, 4vw, 3rem) 1.2rem clamp(2.5rem, 5vw, 4rem); background: #FFFEF5; }
+
+    /* --- scrollytelling: sticky stage + travelling pouch --- */
+    .je-scrolly { position: relative; }
+    .je-step--intro .je-step__card--bare { background: color-mix(in srgb, #FFFEF5 46%, transparent); backdrop-filter: blur(10px); border: 0; box-shadow: none; padding: clamp(1.2rem, 2vw, 1.8rem); border-radius: 26px; width: min(48vw, 580px); text-align: left; }
+    .je-step--intro .je-nutri__title { text-align: left; }
+    .je-scrolly__stage { position: sticky; top: 0; height: 100vh; overflow: hidden; pointer-events: none; }
+    .je-scrolly__pack { position: absolute; left: 50%; top: 50%; width: min(38vw, 540px); will-change: transform; }
+    .je-scrolly__img { position: absolute; inset: 0; width: 100%; height: auto; display: block; filter: drop-shadow(0 30px 40px rgba(10, 46, 25, .28)); }
+    .je-scrolly__img.is-lamb { position: relative; }   /* gives the wrap its height */
+    .je-scrolly__img.is-beef, .je-scrolly__img.is-chicken { opacity: 0; height: 100%; object-fit: contain; }
+    .je-scrolly__shadow { display: none; }
+    .je-scrolly__steps { position: relative; margin-top: -100vh; z-index: 2; }
+    .je-step { min-height: 68vh; display: flex; align-items: center; padding: 0 clamp(1.2rem, 7vw, 7rem); }
+    .je-step[data-side="left"]  { justify-content: flex-start; }
+    .je-step[data-side="right"] { justify-content: flex-end; }
+    .je-step__card { width: min(44vw, 480px); text-align: left; background: rgba(255, 255, 255, .82); backdrop-filter: blur(8px); border: 1.5px solid rgba(10, 46, 25, .08); border-radius: 26px; padding: clamp(1.4rem, 2.6vw, 2.4rem); box-shadow: 0 18px 50px rgba(10, 46, 25, .1); opacity: 0; transform: translateY(34px); will-change: opacity, transform; }
+    .je-step__eyebrow { margin: 0; font-family: var(--sw-font-display); font-weight: 700; font-size: .78rem; letter-spacing: .16em; text-transform: uppercase; color: #44843D; }
+    .je-step__card h3 { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.05; margin: 10px 0 0; }
+    .je-step__card p:not(.je-step__eyebrow) { margin: 14px 0 0; font-size: clamp(.98rem, 1.2vw, 1.1rem); line-height: 1.6; color: rgba(10, 46, 25, .78); }
+    .je-step__card strong { color: #0F4224; }
+    .je-step__card ul { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0 0; padding: 0; }
+    .je-step__card li { font-size: .8rem; font-weight: 600; color: #0F4224; padding: 6px 13px; border-radius: 999px; background: rgba(165, 188, 57, .16); border: 1px solid rgba(165, 188, 57, .4); }
+    .je-step:nth-child(3) .je-step__eyebrow { color: #F27E9E; }
+    .je-step:nth-child(3) li { background: rgba(242, 126, 158, .12); border-color: rgba(242, 126, 158, .45); color: #C41654; }
+    .je-step:nth-child(4) .je-step__eyebrow { color: #FF913F; }
+    .je-step:nth-child(4) li { background: rgba(255, 145, 63, .12); border-color: rgba(255, 145, 63, .4); color: #b45309; }
+    .je-step:nth-child(5) .je-step__eyebrow { color: #56AAE8; }
+    .je-step:nth-child(5) li { background: rgba(86, 170, 232, .12); border-color: rgba(86, 170, 232, .4); color: #1d6fae; }
+    @media (max-width: 860px) {
+      .je-scrolly__pack { width: min(58vw, 330px); top: 32%; }
+      .je-step { align-items: flex-end; padding-bottom: 8vh; }
+      .je-step[data-side="left"], .je-step[data-side="right"] { justify-content: center; }
+      .je-step__card { width: 100%; max-width: 480px; }
+      .je-step--intro .je-step__card--bare { width: 100%; text-align: center; }
+      .je-step--intro .je-nutri__title { text-align: center; }
+    }
+
+    .je-shop { background: #FFFEF5; color: #0A2E19; text-align: center; padding: clamp(3rem, 7vw, 6rem) clamp(1.2rem, 6vw, 5rem); border-top: 1.5px solid rgba(10, 46, 25, .07); }
+    .je-shop__title { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(2rem, 4.2vw, 3.2rem); line-height: 1.05; margin: 14px 0 0; }
+    .je-shop__lead { max-width: 54ch; margin: 16px auto 0; font-size: clamp(1rem, 1.25vw, 1.12rem); line-height: 1.6; color: rgba(10, 46, 25, .72); }
+    .je-shop__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 420px)); justify-content: center; gap: clamp(1.2rem, 2.4vw, 2rem); margin-top: clamp(2rem, 4vw, 3.4rem); }
+    .je-shop__card { position: relative; background: #fff; border: 1.5px solid rgba(10, 46, 25, .08); border-radius: 26px; padding: clamp(1.4rem, 2.2vw, 2rem); box-shadow: 0 14px 40px rgba(10, 46, 25, .07); transition: transform .25s, box-shadow .25s; display: flex; flex-direction: column; }
+    .je-shop__card:hover { transform: translateY(-5px); box-shadow: 0 22px 54px rgba(10, 46, 25, .12); }
+    .je-shop__tag { position: absolute; top: 16px; left: 16px; font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #0F4224; background: rgba(165, 188, 57, .18); border: 1px solid rgba(165, 188, 57, .5); padding: 5px 12px; border-radius: 999px; }
+    .je-shop__tag--pink { color: #C41654; background: rgba(242, 126, 158, .14); border-color: rgba(242, 126, 158, .5); }
+    .je-shop__tag--orange { color: #b45309; background: rgba(255, 145, 63, .14); border-color: rgba(255, 145, 63, .5); }
+    .je-shop__card img { width: min(70%, 250px); height: 290px; object-fit: contain; margin: 16px auto 0; display: block; filter: drop-shadow(0 16px 22px rgba(10, 46, 25, .2)); }
+    .je-shop__card h3 { font-family: var(--sw-font-display); font-weight: 700; font-size: 1.65rem; margin: 18px 0 0; }
+    .je-shop__card > p { margin: 6px 0 0; font-size: 1rem; color: rgba(10, 46, 25, .6); }
+    .je-shop__flavour { font-size: 1.05rem !important; color: rgba(10, 46, 25, .78) !important; line-height: 1.55; margin-top: 12px !important; }
+    .je-shop__row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 22px; }
+    .je-shop__price { font-family: var(--sw-font-display); font-weight: 700; font-size: 1.5rem; color: #0F4224; }
+    .je-shop__price s { opacity: .45; font-size: .95rem; margin-right: 6px; }
+    .je-shop__buy { text-decoration: none; font-weight: 700; font-size: 1.02rem; color: #0A2E19; background: #F8DB3F; padding: 14px 30px; border-radius: 999px; transition: transform .2s; white-space: nowrap; }
+    .je-shop__buy:hover { transform: translateY(-2px); }
+    .je-shop__bundle { display: flex; align-items: center; justify-content: space-between; gap: clamp(1rem, 2.5vw, 2rem); flex-wrap: wrap; max-width: 1064px; margin: clamp(1.2rem, 2.4vw, 1.8rem) auto 0; background: #0F4224; color: #FFFEF5; border-radius: 26px; padding: clamp(1.2rem, 2.4vw, 1.8rem) clamp(1.4rem, 3vw, 2.4rem); text-align: left; box-shadow: 0 18px 50px rgba(10, 46, 25, .25); }
+    .je-shop__bundle-imgs { display: flex; align-items: flex-end; }
+    .je-shop__bundle-imgs img { width: 74px; height: 96px; object-fit: contain; filter: drop-shadow(0 8px 12px rgba(0, 0, 0, .35)); }
+    .je-shop__bundle-imgs img:nth-child(2) { margin: 0 -14px; transform: translateY(4px); }
+    .je-shop__bundle-text { flex: 1; min-width: 220px; }
+    .je-shop__bundle-text h3 { font-family: var(--sw-font-display); font-weight: 700; font-size: 1.5rem; margin: 0; }
+    .je-shop__bundle-text p { margin: 6px 0 0; font-size: .95rem; color: rgba(255, 254, 245, .78); }
+    .je-shop__bundle-text strong { color: #F8DB3F; }
+    .je-shop__bundle-buy { display: flex; align-items: center; gap: 16px; }
+    .je-shop__bundle .je-shop__price { color: #FFFEF5; }
+    .je-shop__perks { list-style: none; display: flex; justify-content: center; gap: clamp(1rem, 3vw, 2.6rem); flex-wrap: wrap; margin: clamp(2rem, 3.6vw, 3rem) 0 0; padding: 0; font-size: .92rem; color: rgba(10, 46, 25, .75); }
+    .je-shop__meta { margin: clamp(1.2rem, 2vw, 1.8rem) 0 0; font-size: .85rem; color: rgba(10, 46, 25, .5); }
+    @media (max-width: 1000px) { .je-shop__grid { grid-template-columns: repeat(2, minmax(0, 340px)); } }
+    @media (max-width: 700px) { .je-shop__grid { grid-template-columns: minmax(0, 400px); } .je-shop__bundle { justify-content: center; text-align: center; } }
+
+    /* --- podcast block, folded into the footer's design language --- */
+    .je-podcast { margin-top: 26px; background: rgba(255, 254, 245, .05); border: 1px solid rgba(255, 254, 245, .14); border-radius: 20px; padding: 20px 22px; }
+    .je-podcast__host { display: flex; align-items: flex-start; gap: 14px; }
+    .je-podcast__avatar { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(160deg, #A5BC39, #44843D); display: grid; place-items: center; font-family: var(--sw-font-display); font-weight: 700; font-size: .95rem; color: #0A2E19; flex: none; }
+    .je-podcast__host p { margin: 0; font-size: .93rem; line-height: 1.5; color: rgba(255, 254, 245, .75); }
+    .je-podcast__host strong { color: #FFFEF5; }
+    .je-podcast__eps { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+    .je-podcast__eps li { font-size: .88rem; line-height: 1.4; color: rgba(255, 254, 245, .7); }
+    .je-podcast__eps span { font-family: ui-monospace, Menlo, monospace; font-size: .74rem; color: #F8DB3F; letter-spacing: .08em; margin-right: 8px; }
+    .je-podcast__links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+    .je-podcast__links a { text-decoration: none; font-size: .84rem; font-weight: 600; color: #FFFEF5; border: 1.5px solid rgba(255, 254, 245, .3); padding: 8px 16px; border-radius: 999px; transition: background .2s, transform .2s; }
+    .je-podcast__links a:hover { background: rgba(255, 254, 245, .12); transform: translateY(-2px); }
+    .je-podcast__links span { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 254, 245, .45); margin-left: 4px; }
+
+    .je-footer { background: var(--sw-bg); color: var(--sw-ink); padding: clamp(4rem, 8vw, 7rem) clamp(1.2rem, 6vw, 5rem) calc(2rem + env(safe-area-inset-bottom)); }
+    .je-footer__grid { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; max-width: 1100px; margin: 0 auto; }
+    /* aspect-ratio + object-position crop the tall photo to the wall itself (the
+       original shows a lot of bare path below it) */
+    .je-footer__photo { width: 100%; aspect-ratio: 1 / 1.05; object-fit: cover; object-position: 50% 34%; border-radius: 22px; display: block; transform: rotate(-1.6deg); box-shadow: 0 24px 60px rgba(0, 0, 0, .35); }
+    .je-footer__text h2 { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1; margin: 0; color: #FFFEF5; }
+    .je-footer__text p { margin: 20px 0 0; max-width: 44ch; font-size: clamp(1rem, 1.3vw, 1.15rem); line-height: 1.6; color: rgba(255, 254, 245, .75); }
+    .je-footer__cta { display: inline-block; margin-top: 28px; text-decoration: none; font-weight: 600; font-size: .95rem; color: #0A2E19; background: #F8DB3F; padding: 13px 26px; border-radius: 999px; transition: transform .2s; }
+    .je-footer__cta:hover { transform: translateY(-2px); }
+    .je-footer__bottom { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; max-width: 1100px; margin: clamp(3rem, 6vw, 5rem) auto 0; padding-top: 1.4rem; border-top: 1px solid rgba(255, 254, 245, .14); font-size: .8rem; color: rgba(255, 254, 245, .45); letter-spacing: .04em; }
+
+    @media (max-width: 900px) {
+      .je-nutri__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .je-footer__grid { grid-template-columns: 1fr; }
+      .je-footer__photo { max-width: 380px; margin: 0 auto; }
+      .je-footer__text { text-align: center; }
+      .je-footer__text p { margin-inline: auto; }
+    }
+    @media (max-width: 480px) {
+      .je-nutri__grid { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <script src="scrub-engine.js"></script>
+  <script>
+    mountScrollWorld(document.getElementById('world'), {
+      brand: { name: 'Juntos Earth', href: '#top' },
+      hint: 'scroll to leave the ground',
+      diveScroll: 1.4,
+      crossfade: 0.14,             /* architecture A: legs chain directly; wider dissolve smooths the seam */
+      sections: [
+        {
+          id: 'finca', label: 'The Farm',
+          still: 'assets/finca.webp',
+          clip: 'assets/vid/finca.mp4',
+          clipMobile: 'assets/vid/finca-m.mp4',
+          accent: '#A5BC39',
+          scroll: 1.8, linger: 0.35,
+          eyebrow: 'It starts on an island',
+          title: 'Ibiza, regenerated from the soil up.',
+          body: 'This is our real farm — curved beds carved into red Ibizan earth, where we are proving food can heal the land it comes from.',
+          tags: ['Regenerative agriculture', 'Ibiza, Spain'],
+        },
+        {
+          id: 'suelo', label: 'The Living Soil',
+          still: 'assets/suelo.webp',
+          clip: 'assets/vid/suelo.mp4',
+          clipMobile: 'assets/vid/suelo-m.mp4',
+          accent: '#D2E18B',
+          scroll: 1.4,
+          eyebrow: 'The magic is underground',
+          title: 'Healthy soil is the whole point.',
+          body: 'Roots, fungi and grazing flocks rebuild carbon-rich living soil — the quiet engine behind everything we make.',
+          tags: ['Pasture-raised', 'Carbon-rich soil'],
+        },
+        {
+          id: 'obrador', label: 'The Kitchen',
+          still: 'assets/obrador.webp',
+          clip: 'assets/vid/obrador.mp4',
+          clipMobile: 'assets/vid/obrador-m.mp4',
+          accent: '#FF913F',
+          scroll: 1.6, linger: 0.4,
+          eyebrow: 'Simmered for 24 hours',
+          title: 'From pasture to pot.',
+          body: 'Pasture-raised bones, organic vegetables, rosemary and thyme — slow-simmered into a broth with 20 g of protein per serving.',
+          tags: ['20 g protein', 'Source of collagen', 'Organic'],
+        },
+        {
+          id: 'europa', label: 'Across Europe',
+          still: 'assets/europa.webp',
+          clip: 'assets/vid/europa.mp4',
+          clipMobile: 'assets/vid/europa-m.mp4',
+          accent: '#56AAE8',
+          scroll: 1.4,
+          eyebrow: 'Partners we trust',
+          title: 'A web of farms across Europe.',
+          body: 'We work with organic and regenerative producers across the continent — a supply chain that gives back more than it takes.',
+          tags: ['Trusted partners', 'Across Europe'],
+        },
+        {
+          id: 'mundo', label: 'The Whole World',
+          still: 'assets/mundo.webp',
+          clip: 'assets/vid/mundo.mp4',
+          clipMobile: 'assets/vid/mundo-m.mp4',
+          accent: '#B9E8B4',
+          scroll: 1.5, linger: 0.35,
+          eyebrow: 'EveryDay Regenerative',
+          title: 'One island can start a world.',
+          body: 'Every pouch sold funds more regenerative hectares — Ibiza today, Europe tomorrow, the whole planet after that.',
+          tags: ['Mission-driven'],
+        },
+        {
+          id: 'caldo', label: 'The Broth',
+          still: 'assets/caldo.webp',
+          clip: 'assets/vid/caldo.mp4',
+          clipMobile: 'assets/vid/caldo-m.mp4',
+          accent: '#F8DB3F',
+          scroll: 2.0, linger: 0.5,
+          eyebrow: 'Our first product',
+          title: 'Organic bone broth, ready to enjoy.',
+          body: 'Lamb or beef, rosemary and thyme, pasture-raised and simmered for 24 hours. The first taste of a regenerated world.',
+          tags: ['350 ml', 'Ready to enjoy', '20 g protein'],
+          cta: {
+            primary: { label: 'Get the broth', href: '#shop' },
+            secondary: { label: 'The podcast', href: '#podcast' },
+          },
+        },
+      ],
+      /* Architecture A (continuous forward take): the legs ARE the journey — no connectors. */
+      connectors: [],
+    });
+
+    /* Nav fixes: the engine's jumpTo() lands at each band's midpoint, which in a
+       continuous-take film is often mid-transition (Kitchen still shows soil, Broth
+       shows the sun flare). Intercept nav/rail clicks in capture phase and send each
+       one to its scene's hero moment instead. Also append the post-film sections. */
+    (function () {
+      const BANDS = [            /* [startVh, widthVh, fraction-of-band] */
+        [0,   1.8, null],        /* The Farm → very top: crisp establishing still */
+        [1.8, 1.4, 0.5],         /* The Living Soil → mid (confirmed good) */
+        [3.2, 1.6, 0.92],        /* The Kitchen → kitchen fully revealed */
+        [4.8, 1.4, 0.85],        /* Across Europe → the high dusk aerial */
+        [6.2, 1.5, 0.96],        /* The Whole World → the full planet reveal (last beat of the leg) */
+        [7.7, 2.0, 0.9],         /* The Broth → the bodegón at rest */
+      ];
+      const targetFor = (i) => {
+        const [s, w, f] = BANDS[i];
+        return f === null ? 0 : Math.round((s + w * f) * innerHeight);
+      };
+      /* After a nav jump the copy would be half-faded (it only peaks mid-band), which
+         reads as "blurry text". Force the target section's copy fully visible for a
+         few seconds; any further scroll hands control back to the engine. */
+      let forceTimer = null;
+      function forceCopy(i) {
+        const copies = document.querySelectorAll('#world .sw-copy');
+        copies.forEach((c, k) => c.classList.toggle('je-force', k === i));
+        clearTimeout(forceTimer);
+        forceTimer = setTimeout(() => copies.forEach((c) => c.classList.remove('je-force')), 4000);
+      }
+      ['wheel', 'touchstart'].forEach((ev) => addEventListener(ev, () => {
+        clearTimeout(forceTimer);
+        document.querySelectorAll('#world .sw-copy.je-force').forEach((c) => c.classList.remove('je-force'));
+      }, { passive: true }));
+      document.addEventListener('click', (e) => {
+        const btn = e.target.closest('#world .sw-nav__item, #world .sw-route__dot');
+        if (!btn || btn.dataset.je) return;
+        const group = btn.classList.contains('sw-nav__item')
+          ? [...btn.parentElement.querySelectorAll('.sw-nav__item:not([data-je])')]
+          : [...btn.parentElement.querySelectorAll('.sw-route__dot')];
+        const i = group.indexOf(btn);
+        if (i < 0 || i >= BANDS.length) return;
+        e.stopPropagation();
+        scrollTo({ top: targetFor(i), behavior: 'smooth' });
+        forceCopy(i);
+      }, true);
+      const nav = document.querySelector('#world .sw-nav');
+      if (nav) {
+        [["What's Inside", '#inside'], ['Shop', '#shop'], ['Podcast', '#podcast']].forEach(([label, sel]) => {
+          const b = document.createElement('button');
+          b.className = 'sw-nav__item'; b.dataset.je = '1'; b.textContent = label;
+          b.addEventListener('click', () => document.querySelector(sel).scrollIntoView({ behavior: 'smooth' }));
+          nav.appendChild(b);
+        });
+      }
+    })();
+  </script>
+  <script>
+    /* Nutrition scrollytelling: the pouch travels between the step cards and
+       crossfades Lamb → Beef halfway. Progress-driven, rAF-smoothed. */
+    (function () {
+      const scrolly = document.getElementById('jeScrolly');
+      const pack = document.getElementById('jePack');
+      const cream = document.getElementById('jeCream');
+      const lamb = pack.querySelector('.is-lamb');
+      const chicken = pack.querySelector('.is-chicken');
+      const beef = pack.querySelector('.is-beef');
+      const steps = [...scrolly.querySelectorAll('.je-step')];
+      const cards = [...scrolly.querySelectorAll('.je-step__card')];
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const phone = matchMedia('(max-width: 860px)');
+      if (reduce) {
+        pack.style.transform = 'translate(-50%,-50%)';
+        cards.forEach((c) => { c.style.opacity = 1; c.style.transform = 'none'; });
+        return;
+      }
+      const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+      const ease = (t) => 0.5 - 0.5 * Math.cos(Math.PI * clamp(t, 0, 1));
+      /* Film-finale hold: past the caldo band start (sections scroll: 1.8+1.4+1.6+1.4+1.5
+         = 7.7vh; +0.5 = safely inside the last scene), pin its frame via the CSS above. */
+      const world = document.getElementById('world');
+      // pack sits OPPOSITE each card: card left → pack right (+), card right → pack left (−)
+      const sideOf = (i) => (steps[i].dataset.side === 'left' ? 1 : -1);
+      let cur = { x: 0, r: 0, bo: 0 };
+      function frame() {
+        const vh = innerHeight;
+        world.classList.toggle('je-hold', scrollY > 8.2 * vh);
+        const rect = scrolly.getBoundingClientRect();
+        world.classList.toggle('je-copy-off', rect.top < vh * 0.5);
+        const total = rect.height - vh;
+        const p = clamp(-rect.top / total, 0, 1);
+        const pf = p * (steps.length - 1);
+        const i = Math.min(steps.length - 2, Math.floor(pf));
+        const t = ease(pf - i);
+        const amp = phone.matches ? 0 : Math.min(innerWidth * 0.24, 460);
+        const x = (sideOf(i) * (1 - t) + sideOf(i + 1) * t) * amp;
+        const r = Math.sin(pf * Math.PI) * 5;
+        /* three-way variant swap: lamb → chicken (can) → beef. Narrow windows + snappy
+           lerp = a quick clean switch, not a long double-exposure; a small scale dip
+           at each swap point sells it as a "pop" instead of a morph. */
+        const c1 = ease((pf - 1.45) / 0.25), c2 = ease((pf - 2.45) / 0.25);
+        cur.x += (x - cur.x) * 0.18; cur.r += (r - cur.r) * 0.18;
+        cur.c1 = (cur.c1 || 0) + (c1 - (cur.c1 || 0)) * 0.45;
+        cur.c2 = (cur.c2 || 0) + (c2 - (cur.c2 || 0)) * 0.45;
+        const dip = 0.07 * (Math.sin(Math.PI * clamp((pf - 1.45) / 0.25, 0, 1)) + Math.sin(Math.PI * clamp((pf - 2.45) / 0.25, 0, 1)));
+        /* film→section dissolve: cream fades in across the intro step; the pouch "lands"
+           with a subtle settling scale over the film's own pack */
+        cream.style.opacity = ease(pf / 0.7).toFixed(3);
+        const sc = 1.08 - 0.08 * ease(pf / 0.8) - dip;
+        pack.style.transform = `translate(calc(-50% + ${cur.x.toFixed(1)}px), -50%) rotate(${cur.r.toFixed(2)}deg) scale(${sc.toFixed(3)})`;
+        lamb.style.opacity = (1 - cur.c1).toFixed(3);
+        chicken.style.opacity = Math.min(cur.c1, 1 - cur.c2).toFixed(3);
+        beef.style.opacity = cur.c2.toFixed(3);
+        for (const c of cards) {
+          const cr = c.getBoundingClientRect();
+          const d = Math.abs(cr.top + cr.height / 2 - vh / 2) / (vh * 0.5);
+          const o = clamp(1.15 - d, 0, 1);
+          c.style.opacity = o.toFixed(3);
+          c.style.transform = `translateY(${((1 - o) * 34).toFixed(1)}px)`;
+        }
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  </script>
+</body>
+</html>

@@ -212,7 +212,11 @@ function mountScrollWorld(container, config) {
     s.loading = true;
     // Serve the lighter mobile encode on phones when one was provided.
     const url = (isMobile() && s.clipM) ? s.clipM : s.clip;
-    fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404')))
+    // A preloader can hand us the bytes directly (config.preloadedBlobs[url]) —
+    // browsers cap HTTP-cache entry sizes below typical clip sizes, so a second
+    // fetch of a "cached" clip can silently re-download the whole file.
+    const pre = config.preloadedBlobs && config.preloadedBlobs[url];
+    (pre ? Promise.resolve(pre) : fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404'))))
       .then(blob => {
         const v = document.createElement('video');
         v.className = 'sw-scene__video';

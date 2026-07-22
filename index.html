@@ -432,17 +432,24 @@
         grow(p);
       };
       const bail = setTimeout(done, 150000);  /* never trap the visitor on a slow link */
+      /* Keep the downloaded bytes as in-memory Blobs and hand them to the engine:
+         Chrome's HTTP cache caps entry sizes well below our clip sizes, so relying
+         on cache hits made the engine silently re-download the whole film. */
+      window.jeBlobs = {};
       try {
         await Promise.all(clips.map(async (u, i) => {
           const res = await fetch(u);
           totalB[i] = +res.headers.get('Content-Length') || 0;
           const reader = res.body.getReader();
+          const chunks = [];
           for (;;) {
             const { done: end, value } = await reader.read();
             if (end) break;
+            chunks.push(value);
             loadedB[i] += value.length;
             update();
           }
+          window.jeBlobs[u] = new Blob(chunks, { type: 'video/mp4' });
         }));
         fill.style.width = '100%'; pct.textContent = '100%'; grow(100);
       } catch (e) { /* reveal regardless — the engine has its own poster fallbacks */ }
@@ -568,6 +575,8 @@
          lands on a fresh frame (48fps motion-interpolated desktop, 24fps mobile). */
       clipFps: 48,
       clipFpsMobile: 24,
+      /* Blobs already downloaded by the preloader — loadClip uses these directly. */
+      preloadedBlobs: window.jeBlobs || {},
     });
 
     /* Nav fixes: the engine's jumpTo() lands at each band's midpoint, which in a

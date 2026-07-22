@@ -457,7 +457,8 @@
       brand: { name: 'Juntos Earth', href: '#top' },
       hint: 'scroll to leave the ground',
       diveScroll: 1.4,
-      crossfade: 0.14,             /* architecture A: legs chain directly; wider dissolve smooths the seam */
+      eagerLoad: true,             /* preloader already warmed the cache — build all clips up front */
+      crossfade: 0.17,             /* architecture A: legs chain directly; wider dissolve smooths the seams */
       sections: [
         {
           id: 'finca', label: 'The Farm',
@@ -477,7 +478,7 @@
           clip: 'assets/vid/suelo.mp4',
           clipMobile: 'assets/vid/suelo-m.mp4',
           accent: '#D2E18B',
-          scroll: 1.4,
+          scroll: 1.4, focus: 0.6,    /* quicken the earth-entry morph, dwell on the macro world */
           eyebrow: 'The magic is underground',
           title: 'Healthy soil is the whole point.',
           body: 'Roots, fungi and grazing flocks rebuild carbon-rich living soil — the quiet engine behind everything we make.',
@@ -489,7 +490,7 @@
           clip: 'assets/vid/obrador.mp4',
           clipMobile: 'assets/vid/obrador-m.mp4',
           accent: '#FF913F',
-          scroll: 1.6, focus: 0.82,   /* kitchen only fully reveals late in the leg */
+          scroll: 1.9, focus: 0.82,   /* kitchen reveals late — extra scroll so it doesn't feel rushed */
           eyebrow: 'Simmered for 24 hours',
           title: 'From pasture to pot.',
           body: 'Pasture-raised bones, organic vegetables, rosemary and thyme — slow-simmered into a broth with 20 g of protein per serving.',
@@ -548,12 +549,12 @@
       const BANDS = [            /* [startVh, widthVh, fraction-of-band] */
         [0,   1.8, null],        /* The Farm → very top: crisp establishing still */
         /* With per-section `focus` remaps, mid-band IS each scene's hero moment
-           (europa's scroll grew 1.4→1.5, shifting the later bands). */
+           (kitchen scroll 1.9 / europa 1.5 shift the later bands). */
         [1.8, 1.4, 0.5],         /* The Living Soil */
-        [3.2, 1.6, 0.5],         /* The Kitchen */
-        [4.8, 1.5, 0.5],         /* Across Europe */
-        [6.3, 1.5, 0.5],         /* The Whole World */
-        [7.8, 2.0, 0.5],         /* The Broth */
+        [3.2, 1.9, 0.5],         /* The Kitchen */
+        [5.1, 1.5, 0.5],         /* Across Europe */
+        [6.6, 1.5, 0.5],         /* The Whole World */
+        [8.1, 2.0, 0.5],         /* The Broth */
       ];
       const targetFor = (i) => {
         const [s, w, f] = BANDS[i];
@@ -626,7 +627,7 @@
       let cur = { x: 0, r: 0, bo: 0 };
       function frame() {
         const vh = innerHeight;
-        world.classList.toggle('je-hold', scrollY > 8.2 * vh);
+        world.classList.toggle('je-hold', scrollY > 8.6 * vh);   /* inside the caldo band [8.1, 10.1] */
         const rect = scrolly.getBoundingClientRect();
         world.classList.toggle('je-copy-off', rect.top < vh * 0.5);
         const total = rect.height - vh;

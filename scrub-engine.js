@@ -179,10 +179,12 @@ function mountScrollWorld(container, config) {
   // Per-section `focus` (0..1): monotone remap that puts clip-time `F` at mid-band —
   // exactly where the copy peaks — and dwells there (zero velocity at the midpoint).
   // f(0)=0, f(1)=1 so the seam frames are untouched and the chain stays frame-locked.
+  // Quadratic halves: still dwells at the focus point mid-band, but the rush at the
+  // band edges is gentler than a cubic (max speed 4F vs 6F) — scenes don't feel rushed.
   const focusEase = (x, F) => {
     F = clamp(F);
-    if (x <= 0.5) { const u = 1 - 2 * x; return F * (1 - u * u * u); }
-    const u = 2 * x - 1; return F + (1 - F) * u * u * u;
+    if (x <= 0.5) { const u = 1 - 2 * x; return F * (1 - u * u); }
+    const u = 2 * x - 1; return F + (1 - F) * u * u;
   };
   let vh = window.innerHeight, stageX = 0, totalW = 0, activeIndex = -1, ticking = false;
   let laidOutW = window.innerWidth;   // width the current layout was computed at (see onResize)
@@ -330,6 +332,10 @@ function mountScrollWorld(container, config) {
   window.addEventListener('orientationchange', layout);
   window.addEventListener('load', layout);
   layout();
+  // Eager mode: build every clip's blob + video element up front instead of lazily
+  // on approach. Pair with a preloader that has already warmed the HTTP cache — the
+  // first scroll pass then scrubs warm decoders instead of half-built blobs.
+  if (config.eagerLoad && !reduce) SEGMENTS.forEach(loadClip);
   requestAnimationFrame(raf);
 
   // ---- helpers ----

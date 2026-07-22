@@ -24,6 +24,32 @@
   </style>
 </head>
 <body>
+  <!-- Branded preloader: streams the first film clip with real progress, then fades out.
+       The engine re-requests the same URL and hits the browser cache. -->
+  <div id="jeLoader" role="status" aria-label="Loading Juntos Earth">
+    <div class="je-loader__inner">
+      <span class="je-loader__mark"></span>
+      <strong>Juntos Earth</strong>
+      <em>The seeds will grow</em>
+      <div class="je-loader__bar"><i id="jeLoaderFill"></i></div>
+      <span class="je-loader__pct" id="jeLoaderPct">0%</span>
+    </div>
+  </div>
+  <style>
+    #jeLoader { position: fixed; inset: 0; z-index: 999; background: #0A2E19; display: grid; place-items: center; transition: opacity .65s ease; }
+    #jeLoader.is-done { opacity: 0; pointer-events: none; }
+    .je-loader__inner { display: flex; flex-direction: column; align-items: center; gap: 10px; color: #FFFEF5; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; transition: transform .65s ease; }
+    #jeLoader.is-done .je-loader__inner { transform: scale(1.06); }
+    .je-loader__mark { width: 34px; height: 40px; border-radius: 10px 10px 14px 14px; background: linear-gradient(160deg, #F8DB3F, #A5BC39); box-shadow: 0 10px 30px rgba(248, 219, 63, .35); animation: je-pulse 1.6s ease-in-out infinite; }
+    @keyframes je-pulse { 0%, 100% { transform: translateY(0) } 50% { transform: translateY(-7px) } }
+    .je-loader__inner strong { font-family: 'Bricolage Grotesque', Georgia, serif; font-weight: 700; font-size: 1.6rem; margin-top: 8px; }
+    .je-loader__inner em { font-style: normal; font-size: .82rem; letter-spacing: .18em; text-transform: uppercase; color: rgba(255, 254, 245, .55); }
+    .je-loader__bar { width: min(240px, 60vw); height: 3px; border-radius: 3px; background: rgba(255, 254, 245, .14); overflow: hidden; margin-top: 18px; }
+    .je-loader__bar i { display: block; height: 100%; width: 0; border-radius: 3px; background: linear-gradient(90deg, #A5BC39, #F8DB3F); transition: width .25s ease; }
+    .je-loader__pct { font-size: .8rem; color: rgba(255, 254, 245, .55); font-variant-numeric: tabular-nums; }
+    body.je-loading { overflow: hidden !important; }
+  </style>
+
   <div id="top"></div>
   <div id="world"></div>
 
@@ -327,6 +353,44 @@
     }
   </style>
 
+  <script>
+    /* Preloader: stream the hero clip with progress, reveal when cached. */
+    (async function () {
+      document.body.classList.add('je-loading');
+      const loader = document.getElementById('jeLoader');
+      const fill = document.getElementById('jeLoaderFill');
+      const pct = document.getElementById('jeLoaderPct');
+      let finished = false;
+      const done = () => {
+        if (finished) return; finished = true;
+        document.body.classList.remove('je-loading');
+        loader.classList.add('is-done');
+        setTimeout(() => loader.remove(), 800);
+      };
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return done();
+      const mobile = matchMedia('(hover: none) and (pointer: coarse)').matches || matchMedia('(max-width: 860px)').matches;
+      const src = mobile ? 'assets/vid/finca-m.mp4' : 'assets/vid/finca.mp4';
+      const bail = setTimeout(done, 20000);   /* never trap the visitor on a slow link */
+      try {
+        const res = await fetch(src);
+        const total = +res.headers.get('Content-Length') || 0;
+        const reader = res.body.getReader();
+        let got = 0;
+        for (;;) {
+          const { done: end, value } = await reader.read();
+          if (end) break;
+          got += value.length;
+          if (total) {
+            const p = Math.min(100, Math.round((got / total) * 100));
+            fill.style.width = p + '%'; pct.textContent = p + '%';
+          }
+        }
+        fill.style.width = '100%'; pct.textContent = '100%';
+      } catch (e) { /* reveal regardless — the engine has its own poster fallbacks */ }
+      clearTimeout(bail);
+      setTimeout(done, 250);
+    })();
+  </script>
   <script src="scrub-engine.js"></script>
   <script>
     mountScrollWorld(document.getElementById('world'), {

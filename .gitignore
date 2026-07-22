@@ -5,3 +5,6 @@ skills-lock.json
 .claude/
 __pycache__/
 *.log
+
+.vercel
+.env*

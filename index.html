@@ -354,7 +354,11 @@
   </style>
 
   <script>
-    /* Preloader: stream the hero clip with progress, reveal when cached. */
+    /* Preloader v2: stream the WHOLE film (all six clips, in parallel) with real total
+       progress, and only reveal at 100%. Every scene then scrubs straight from cache —
+       no mid-journey poster freezes. Demo-first: wow over bytes. */
+    let jeResolvePreload;
+    window.jePreload = new Promise((r) => { jeResolvePreload = r; });
     (async function () {
       document.body.classList.add('je-loading');
       const loader = document.getElementById('jeLoader');
@@ -363,36 +367,48 @@
       let finished = false;
       const done = () => {
         if (finished) return; finished = true;
+        jeResolvePreload();               /* the engine mounts only now — no duplicate downloads */
         document.body.classList.remove('je-loading');
         loader.classList.add('is-done');
         setTimeout(() => loader.remove(), 800);
       };
       if (matchMedia('(prefers-reduced-motion: reduce)').matches) return done();
       const mobile = matchMedia('(hover: none) and (pointer: coarse)').matches || matchMedia('(max-width: 860px)').matches;
-      const src = mobile ? 'assets/vid/finca-m.mp4' : 'assets/vid/finca.mp4';
-      const bail = setTimeout(done, 20000);   /* never trap the visitor on a slow link */
+      const names = ['finca', 'suelo', 'obrador', 'europa', 'mundo', 'caldo'];
+      const clips = names.map((n) => `assets/vid/${n}${mobile ? '-m' : ''}.mp4`);
+      const loadedB = new Array(clips.length).fill(0);
+      const totalB = new Array(clips.length).fill(0);
+      const update = () => {
+        const T = totalB.reduce((a, b) => a + b, 0);
+        if (!T) return;
+        const L = loadedB.reduce((a, b) => a + b, 0);
+        const p = Math.min(100, Math.floor((L / T) * 100));
+        fill.style.width = p + '%'; pct.textContent = p + '%';
+      };
+      const bail = setTimeout(done, 90000);   /* never trap the visitor on a slow link */
       try {
-        const res = await fetch(src);
-        const total = +res.headers.get('Content-Length') || 0;
-        const reader = res.body.getReader();
-        let got = 0;
-        for (;;) {
-          const { done: end, value } = await reader.read();
-          if (end) break;
-          got += value.length;
-          if (total) {
-            const p = Math.min(100, Math.round((got / total) * 100));
-            fill.style.width = p + '%'; pct.textContent = p + '%';
+        await Promise.all(clips.map(async (u, i) => {
+          const res = await fetch(u);
+          totalB[i] = +res.headers.get('Content-Length') || 0;
+          const reader = res.body.getReader();
+          for (;;) {
+            const { done: end, value } = await reader.read();
+            if (end) break;
+            loadedB[i] += value.length;
+            update();
           }
-        }
+        }));
         fill.style.width = '100%'; pct.textContent = '100%';
       } catch (e) { /* reveal regardless — the engine has its own poster fallbacks */ }
       clearTimeout(bail);
-      setTimeout(done, 250);
+      setTimeout(done, 350);
     })();
   </script>
   <script src="scrub-engine.js"></script>
   <script>
+    /* Mount only after the preloader has the whole film cached (resolves immediately
+       under prefers-reduced-motion or on preload failure). */
+    (window.jePreload || Promise.resolve()).then(() => {
     mountScrollWorld(document.getElementById('world'), {
       brand: { name: 'Juntos Earth', href: '#top' },
       hint: 'scroll to leave the ground',
@@ -533,6 +549,7 @@
         });
       }
     })();
+    });   /* end preload-gated mount */
   </script>
   <script>
     /* Nutrition scrollytelling: the pouch travels between the step cards and

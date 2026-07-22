@@ -412,7 +412,10 @@
       const names = ['finca', 'suelo', 'obrador', 'europa', 'mundo', 'caldo'];
       const clips = names.map((n) => `assets/vid/${n}${mobile ? '-m' : ''}.mp4`);
       const loadedB = new Array(clips.length).fill(0);
-      const totalB = new Array(clips.length).fill(0);
+      /* Real encode sizes (bytes, approx) so the bar is smooth from the first byte. */
+      const totalB = (mobile
+        ? [22, 13, 12, 11, 13, 10]
+        : [75, 43, 41, 36, 42, 35]).map((mb) => mb * 1048576);
       const plants = [...loader.querySelectorAll('.je-plant')];
       const grow = (p) => {
         for (const g of plants) {
@@ -424,34 +427,48 @@
         }
       };
       const update = () => {
-        const T = totalB.reduce((a, b) => a + b, 0);
-        if (!T) return;
-        const L = loadedB.reduce((a, b) => a + b, 0);
-        const p = Math.min(100, Math.floor((L / T) * 100));
+        /* The bar tracks the OPENING clip — it hits 100% exactly when the page opens. */
+        const p = Math.min(100, Math.floor((loadedB[0] / totalB[0]) * 100));
         fill.style.width = p + '%'; pct.textContent = p + '%';
         grow(p);
       };
-      const bail = setTimeout(done, 150000);  /* never trap the visitor on a slow link */
-      /* Keep the downloaded bytes as in-memory Blobs and hand them to the engine:
-         Chrome's HTTP cache caps entry sizes well below our clip sizes, so relying
-         on cache hits made the engine silently re-download the whole film. */
+      const bail = setTimeout(done, 60000);   /* never trap the visitor on a slow link */
+      /* Priority streaming (the Apple/OPTIKKA pattern): download clips in JOURNEY
+         ORDER, two at a time, keep each as an in-memory Blob (browser HTTP caches
+         cap entry sizes below our clips, so cache hits can't be relied on), and
+         REVEAL as soon as the first scene's clip is ready — the rest keep landing
+         ahead of the visitor's scroll. The engine awaits these same promises, so
+         nothing is ever downloaded twice. */
       window.jeBlobs = {};
-      try {
-        await Promise.all(clips.map(async (u, i) => {
-          const res = await fetch(u);
-          totalB[i] = +res.headers.get('Content-Length') || 0;
-          const reader = res.body.getReader();
-          const chunks = [];
-          for (;;) {
-            const { done: end, value } = await reader.read();
-            if (end) break;
-            chunks.push(value);
-            loadedB[i] += value.length;
-            update();
-          }
-          window.jeBlobs[u] = new Blob(chunks, { type: 'video/mp4' });
-        }));
+      const resolvers = {};
+      window.jeBlobPromises = {};
+      clips.forEach((u) => { window.jeBlobPromises[u] = new Promise((r) => { resolvers[u] = r; }); });
+      const fetchClip = async (u, i) => {
+        const res = await fetch(u);
+        if (+res.headers.get('Content-Length')) totalB[i] = +res.headers.get('Content-Length');
+        const reader = res.body.getReader();
+        const chunks = [];
+        for (;;) {
+          const { done: end, value } = await reader.read();
+          if (end) break;
+          chunks.push(value);
+          loadedB[i] += value.length;
+          update();
+        }
+        const blob = new Blob(chunks, { type: 'video/mp4' });
+        window.jeBlobs[u] = blob;
+        resolvers[u](blob);
+      };
+      (async () => {   /* ordered queue — opening clip gets FULL bandwidth, then 2 at a time */
+        const queue = clips.map((u, i) => () => fetchClip(u, i).catch(() => resolvers[u](null)));
+        const first = queue.shift()();
+        const workerA = first.then(async () => { while (queue.length) await queue.shift()(); });
+        const workerB = first.then(async () => { while (queue.length) await queue.shift()(); });
+        await Promise.all([workerA, workerB]);
         fill.style.width = '100%'; pct.textContent = '100%'; grow(100);
+      })();
+      try {
+        await window.jeBlobPromises[clips[0]];   /* reveal once the opening clip is in hand */
       } catch (e) { /* reveal regardless — the engine has its own poster fallbacks */ }
       clearTimeout(bail);
       setTimeout(done, 350);
@@ -575,8 +592,10 @@
          lands on a fresh frame (48fps motion-interpolated desktop, 24fps mobile). */
       clipFps: 48,
       clipFpsMobile: 24,
-      /* Blobs already downloaded by the preloader — loadClip uses these directly. */
+      /* Blobs handed over by the preloader — resolved ones used directly, pending
+         ones awaited. The engine never re-downloads a clip. */
       preloadedBlobs: window.jeBlobs || {},
+      preloadedPromises: window.jeBlobPromises || {},
     });
 
     /* Nav fixes: the engine's jumpTo() lands at each band's midpoint, which in a

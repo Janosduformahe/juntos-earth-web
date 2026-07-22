@@ -225,6 +225,9 @@ function mountScrollWorld(container, config) {
         // hiding the still on metadata alone would flash an empty scene.
         v.addEventListener('seeked', () => { s.el.classList.add('has-clip'); }, { once: true });
         v.addEventListener('loadeddata', () => { try { v.pause(); } catch (e) {} if (userReady) primeVideo(v); });
+        // Chain the next seek off `seeked` instead of waiting for the next rAF tick —
+        // shaves up to a frame of pipeline latency per scrub step while scrolling fast.
+        v.addEventListener('seeked', () => seekSeg(s));
         s.el.appendChild(v); s.video = v; s.hasClip = true;
       }).catch(() => { s.loading = false; });
   }
@@ -280,20 +283,35 @@ function mountScrollWorld(container, config) {
     ticking = false;
   }
 
+  // Issue a seek for one segment — shared by the rAF loop and the `seeked` chain.
+  // Targets are quantized to the clip's frame grid (config.clipFps/clipFpsMobile) so
+  // every seek lands on a NEW frame: sub-frame targets used to burn up to 5 redundant
+  // trips through the seek pipeline per displayed frame without changing the picture.
+  function seekSeg(s) {
+    if (!s.hasClip || !s.ready || !s.video || s.video.seeking) return;
+    const dur = s.video.duration || 1;
+    const fps = isMobile() ? (config.clipFpsMobile || config.clipFps) : config.clipFps;
+    let t = clamp(s.cur, 0, 0.999) * dur;
+    if (fps) t = Math.round(t * fps) / fps;
+    const eps = fps ? 1 / (fps * 2) : (isMobile() ? 0.02 : 0.008);
+    if (Math.abs(s.video.currentTime - t) > eps) { try { s.video.currentTime = t; } catch (e) {} }
+  }
+
+  let lastRaf = performance.now();
   function raf() {
-    const eps = isMobile() ? 0.02 : 0.008;   // coarser seek step on phones = fewer decodes
+    // Time-based lerp: identical feel on 60 / 120 / 144 Hz displays (0.18/frame at 60Hz
+    // used to converge 2.4x faster on 144Hz panels).
+    const now = performance.now();
+    const dt = Math.min(50, now - lastRaf); lastRaf = now;
+    const k = reduce ? 1 : 1 - Math.exp(-dt * 0.012);
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
       if (!s.hasClip || !s.ready || !s.video) continue;
-      // Never queue a seek while the decoder is still resolving the last one.
-      // On phones a fast flick would otherwise pile up seeks and freeze the clip;
-      // cur keeps lerping, so we snap to the latest target the moment it's free.
-      if (s.video.seeking) continue;
       if (!s.visible && Math.abs(s.cur - s.target) < 0.002) continue;
-      s.cur += (s.target - s.cur) * (reduce ? 1 : 0.18);
-      const dur = s.video.duration || 1;
-      const t = clamp(s.cur, 0, 0.999) * dur;
-      if (Math.abs(s.video.currentTime - t) > eps) { try { s.video.currentTime = t; } catch (e) {} }
+      s.cur += (s.target - s.cur) * k;
+      // Never queue a seek while the decoder is still resolving the last one; the
+      // `seeked` listener chains the next seek the moment the pipe frees up.
+      seekSeg(s);
     }
     requestAnimationFrame(raf);
   }

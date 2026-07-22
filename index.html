@@ -253,7 +253,9 @@
     /* The engine injects html,body{overflow-x:hidden} which turns body into a scroll
        container and BREAKS position:sticky. `clip` clips the same without doing that. */
     html, body { overflow-x: clip !important; }
-    html { scroll-behavior: smooth; }   /* anchor jumps fly through the film instead of teleporting */
+    /* NOTE: scroll-behavior:smooth removed — Lenis owns scroll animation now
+       (native smooth would fight its wheel interpolation). Anchors route through
+       jeScroll() below, which falls back to native smooth when Lenis is absent. */
 
     /* Hold the film's final frame on screen once the finale is reached, so the nutrition
        section slides OVER the bodegón instead of over an empty green gap. The engine
@@ -429,7 +431,7 @@
         fill.style.width = p + '%'; pct.textContent = p + '%';
         grow(p);
       };
-      const bail = setTimeout(done, 90000);   /* never trap the visitor on a slow link */
+      const bail = setTimeout(done, 150000);  /* never trap the visitor on a slow link */
       try {
         await Promise.all(clips.map(async (u, i) => {
           const res = await fetch(u);
@@ -448,11 +450,34 @@
       setTimeout(done, 350);
     })();
   </script>
+  <script src="assets/vendor/lenis.min.js"></script>
   <script src="scrub-engine.js"></script>
   <script>
     /* Mount only after the preloader has the whole film cached (resolves immediately
        under prefers-reduced-motion or on preload failure). */
     (window.jePreload || Promise.resolve()).then(() => {
+    /* Lenis: discrete wheel steps become one continuously interpolated scroll value —
+       the scroll itself glides, so film, copy and parallax all glide with it.
+       Touch keeps native inertia (syncTouch default off); reduced-motion opts out. */
+    const jeCoarse = matchMedia('(hover: none) and (pointer: coarse)').matches;
+    window.jeLenis = (!jeCoarse && !matchMedia('(prefers-reduced-motion: reduce)').matches && window.Lenis)
+      ? new Lenis({ autoRaf: true, lerp: 0.1 })
+      : null;
+    window.jeScroll = (target) => window.jeLenis
+      ? window.jeLenis.scrollTo(target, { duration: 1.8, easing: (t) => 1 - Math.pow(1 - t, 3) })
+      : (typeof target === 'number'
+          ? scrollTo({ top: target, behavior: 'smooth' })
+          : target.scrollIntoView({ behavior: 'smooth' }));
+    /* All in-page anchors (film CTAs, footer "fly again") route through jeScroll. */
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a || a.getAttribute('href').length < 2) return;
+      const el = document.querySelector(a.getAttribute('href'));
+      if (!el) return;
+      e.preventDefault();
+      window.jeScroll(a.getAttribute('href') === '#top' ? 0 : el);
+    });
+
     mountScrollWorld(document.getElementById('world'), {
       brand: { name: 'Juntos Earth', href: '#top' },
       hint: 'scroll to leave the ground',
@@ -539,6 +564,10 @@
       ],
       /* Architecture A (continuous forward take): the legs ARE the journey — no connectors. */
       connectors: [],
+      /* Frame rates of the encodes: seek targets snap to this grid so every seek
+         lands on a fresh frame (48fps motion-interpolated desktop, 24fps mobile). */
+      clipFps: 48,
+      clipFpsMobile: 24,
     });
 
     /* Nav fixes: the engine's jumpTo() lands at each band's midpoint, which in a
@@ -583,7 +612,7 @@
         const i = group.indexOf(btn);
         if (i < 0 || i >= BANDS.length) return;
         e.stopPropagation();
-        scrollTo({ top: targetFor(i), behavior: 'smooth' });
+        window.jeScroll(targetFor(i));
         forceCopy(i);
       }, true);
       const nav = document.querySelector('#world .sw-nav');
@@ -591,7 +620,7 @@
         [["What's Inside", '#inside'], ['Shop', '#shop'], ['Podcast', '#podcast']].forEach(([label, sel]) => {
           const b = document.createElement('button');
           b.className = 'sw-nav__item'; b.dataset.je = '1'; b.textContent = label;
-          b.addEventListener('click', () => document.querySelector(sel).scrollIntoView({ behavior: 'smooth' }));
+          b.addEventListener('click', () => window.jeScroll(document.querySelector(sel)));
           nav.appendChild(b);
         });
       }

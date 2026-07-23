@@ -427,12 +427,14 @@
         }
       };
       const update = () => {
-        /* The bar tracks the OPENING clip — it hits 100% exactly when the page opens. */
-        const p = Math.min(100, Math.floor((loadedB[0] / totalB[0]) * 100));
+        /* The bar tracks the WHOLE film — 100% means every scene is cached and the
+           first pass is guaranteed smooth. A loading screen is a promise. */
+        const p = Math.min(100, Math.floor((loadedB.reduce((a, b) => a + b, 0) / totalB.reduce((a, b) => a + b, 0)) * 100));
         fill.style.width = p + '%'; pct.textContent = p + '%';
         grow(p);
       };
-      const bail = setTimeout(done, 60000);   /* never trap the visitor on a slow link */
+      const bail = setTimeout(done, 300000);  /* generous safety hatch — a demo visitor
+                                                 on a hopeless link still gets in eventually */
       /* Priority streaming (the Apple/OPTIKKA pattern): download clips in JOURNEY
          ORDER, two at a time, keep each as an in-memory Blob (browser HTTP caches
          cap entry sizes below our clips, so cache hits can't be relied on), and
@@ -468,7 +470,7 @@
         fill.style.width = '100%'; pct.textContent = '100%'; grow(100);
       })();
       try {
-        await window.jeBlobPromises[clips[0]];   /* reveal once the opening clip is in hand */
+        await Promise.all(Object.values(window.jeBlobPromises));   /* reveal at TRUE 100% */
       } catch (e) { /* reveal regardless — the engine has its own poster fallbacks */ }
       clearTimeout(bail);
       setTimeout(done, 350);

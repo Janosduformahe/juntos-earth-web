@@ -475,6 +475,7 @@
     })();
   </script>
   <script src="assets/vendor/lenis.min.js"></script>
+  <script src="assets/vendor/mp4box.all.min.js"></script>
   <script src="scrub-engine.js"></script>
   <script>
     /* Mount only after the preloader has the whole film cached (resolves immediately
@@ -592,6 +593,9 @@
          lands on a fresh frame (48fps motion-interpolated desktop, 24fps mobile). */
       clipFps: 48,
       clipFpsMobile: 24,
+      /* PREVIEW BRANCH: frame-exact WebCodecs canvas renderer (auto-falls back to
+         <video> scrubbing wherever WebCodecs/MP4Box are unavailable). */
+      renderer: 'webcodecs',
       /* Blobs handed over by the preloader — resolved ones used directly, pending
          ones awaited. The engine never re-downloads a clip. */
       preloadedBlobs: window.jeBlobs || {},

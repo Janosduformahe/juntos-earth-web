@@ -219,24 +219,113 @@ function mountScrollWorld(container, config) {
     const netFetch = () => fetch(url).then(r => r.ok ? r.blob() : Promise.reject(new Error('404')));
     const pre = config.preloadedBlobs && config.preloadedBlobs[url];
     const prep = !pre && config.preloadedPromises && config.preloadedPromises[url];
+    const useWC = config.renderer === 'webcodecs' && typeof VideoDecoder !== 'undefined' && typeof MP4Box !== 'undefined';
     (pre ? Promise.resolve(pre) : prep ? prep.then(b => b || netFetch()) : netFetch())
-      .then(blob => {
-        const v = document.createElement('video');
-        v.className = 'sw-scene__video';
-        v.muted = true; v.playsInline = true; v.preload = 'auto';
-        v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
-        v.src = URL.createObjectURL(blob);
-        v.addEventListener('loadedmetadata', () => { s.ready = true; read(); });
-        // Reveal the video (hide the still poster) only once a real frame has
-        // painted — on iOS a seeked-but-never-played muted video stays blank, so
-        // hiding the still on metadata alone would flash an empty scene.
-        v.addEventListener('seeked', () => { s.el.classList.add('has-clip'); }, { once: true });
-        v.addEventListener('loadeddata', () => { try { v.pause(); } catch (e) {} if (userReady) primeVideo(v); });
-        // Chain the next seek off `seeked` instead of waiting for the next rAF tick —
-        // shaves up to a frame of pipeline latency per scrub step while scrolling fast.
-        v.addEventListener('seeked', () => seekSeg(s));
-        s.el.appendChild(v); s.video = v; s.hasClip = true;
-      }).catch(() => { s.loading = false; });
+      .then(blob => useWC
+        ? attachWebCodecs(s, blob).catch(() => attachVideo(s, blob))
+        : attachVideo(s, blob))
+      .catch(() => { s.loading = false; });
+  }
+
+  function attachVideo(s, blob) {
+    const v = document.createElement('video');
+    v.className = 'sw-scene__video';
+    v.muted = true; v.playsInline = true; v.preload = 'auto';
+    v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+    v.src = URL.createObjectURL(blob);
+    v.addEventListener('loadedmetadata', () => { s.ready = true; read(); });
+    // Reveal the video (hide the still poster) only once a real frame has
+    // painted — on iOS a seeked-but-never-played muted video stays blank, so
+    // hiding the still on metadata alone would flash an empty scene.
+    v.addEventListener('seeked', () => { s.el.classList.add('has-clip'); }, { once: true });
+    v.addEventListener('loadeddata', () => { try { v.pause(); } catch (e) {} if (userReady) primeVideo(v); });
+    // Chain the next seek off `seeked` instead of waiting for the next rAF tick —
+    // shaves up to a frame of pipeline latency per scrub step while scrolling fast.
+    v.addEventListener('seeked', () => seekSeg(s));
+    s.el.appendChild(v); s.video = v; s.hasClip = true;
+  }
+
+  // WebCodecs renderer: demux the mp4 once (mp4box), then decode EXACT frames on
+  // demand straight to a canvas — no seek pipeline, ~1-4ms per frame on hardware.
+  // All-intra encodes make every sample independently decodable, so random access
+  // is a single decode. Any failure rejects and the caller falls back to <video>.
+  function attachWebCodecs(s, blob) {
+    return blob.arrayBuffer().then(buf => new Promise((resolve, reject) => {
+      const mp4 = MP4Box.createFile();
+      const samples = [];
+      let track = null, finished = false;
+      mp4.onError = reject;
+      mp4.onReady = (info) => {
+        track = info.videoTracks && info.videoTracks[0];
+        if (!track) return reject(new Error('no video track'));
+        mp4.setExtractionOptions(track.id, null, { nbSamples: Infinity });
+        mp4.start();
+      };
+      mp4.onSamples = (id, user, arr) => {
+        for (let i = 0; i < arr.length; i++) samples.push(arr[i]);
+        if (track && !finished && samples.length >= track.nb_samples) { finished = true; finish(); }
+      };
+      function avcDescription() {
+        const entry = mp4.getTrackById(track.id).mdia.minf.stbl.stsd.entries[0];
+        const box = entry.avcC || entry.hvcC || entry.vpcC || entry.av1C;
+        if (!box) return undefined;
+        const ds = new DataStream(undefined, 0, DataStream.BIG_ENDIAN);
+        box.write(ds);
+        return new Uint8Array(ds.buffer, 8);   // strip the 8-byte box header
+      }
+      function finish() {
+        try {
+          const w = (track.video && track.video.width) || track.track_width;
+          const h = (track.video && track.video.height) || track.track_height;
+          const canvas = document.createElement('canvas');
+          canvas.className = 'sw-scene__video';
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext('2d');
+          const dur = track.duration / track.timescale;
+          const fps = samples.length / dur;
+          let drawnIdx = -1, pendingIdx = 0, busy = false;
+          const decoder = new VideoDecoder({
+            output: (frame) => {
+              ctx.drawImage(frame, 0, 0, w, h);
+              frame.close();
+              busy = false;
+              if (window.__jeDraws != null) window.__jeDraws++;
+              if (!s.el.classList.contains('has-clip')) s.el.classList.add('has-clip');
+              if (pendingIdx !== drawnIdx) drawFrame(pendingIdx);   // latest-wins chaining
+            },
+            error: reject,
+          });
+          decoder.configure({
+            codec: track.codec, codedWidth: w, codedHeight: h,
+            description: avcDescription(), optimizeForLatency: true,
+          });
+          function drawFrame(idx) {
+            busy = true; drawnIdx = idx;
+            const sm = samples[idx];
+            decoder.decode(new EncodedVideoChunk({
+              type: sm.is_sync ? 'key' : 'delta',
+              timestamp: Math.round((1e6 * sm.cts) / sm.timescale),
+              data: sm.data,
+            }));
+          }
+          s.el.appendChild(canvas);
+          s.wcDuration = dur;
+          s.wc = { draw: (t) => {
+            const idx = Math.max(0, Math.min(samples.length - 1, Math.round(t * fps)));
+            pendingIdx = idx;
+            if (!busy && idx !== drawnIdx) drawFrame(idx);
+          } };
+          s.hasClip = true; s.ready = true;
+          s.wc.draw(0);            // paint frame 0 so the poster can hand off
+          read();
+          resolve();
+        } catch (e) { reject(e); }
+      }
+      buf.fileStart = 0;
+      mp4.appendBuffer(buf);
+      mp4.flush();
+      setTimeout(() => { if (!finished) reject(new Error('demux timeout')); }, 8000);
+    }));
   }
 
   function read() {
@@ -295,7 +384,9 @@ function mountScrollWorld(container, config) {
   // every seek lands on a NEW frame: sub-frame targets used to burn up to 5 redundant
   // trips through the seek pipeline per displayed frame without changing the picture.
   function seekSeg(s) {
-    if (!s.hasClip || !s.ready || !s.video || s.video.seeking) return;
+    if (!s.hasClip || !s.ready) return;
+    if (s.wc) { s.wc.draw(clamp(s.cur, 0, 0.999) * (s.wcDuration || 1)); return; }
+    if (!s.video || s.video.seeking) return;
     const dur = s.video.duration || 1;
     const fps = isMobile() ? (config.clipFpsMobile || config.clipFps) : config.clipFps;
     let t = clamp(s.cur, 0, 0.999) * dur;
@@ -313,7 +404,7 @@ function mountScrollWorld(container, config) {
     const k = reduce ? 1 : 1 - Math.exp(-dt * 0.012);
     for (let i = 0; i < NSEG; i++) {
       const s = SEGMENTS[i];
-      if (!s.hasClip || !s.ready || !s.video) continue;
+      if (!s.hasClip || !s.ready || (!s.video && !s.wc)) continue;
       if (!s.visible && Math.abs(s.cur - s.target) < 0.002) continue;
       s.cur += (s.target - s.cur) * k;
       // Never queue a seek while the decoder is still resolving the last one; the

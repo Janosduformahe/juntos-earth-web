@@ -414,8 +414,8 @@
       const loadedB = new Array(clips.length).fill(0);
       /* Real encode sizes (bytes, approx) so the bar is smooth from the first byte. */
       const totalB = (mobile
-        ? [22, 13, 12, 11, 13, 10]
-        : [75, 43, 41, 36, 42, 35]).map((mb) => mb * 1048576);
+        ? [22, 45, 12, 11, 13, 10]
+        : [75, 91, 41, 36, 42, 35]).map((mb) => mb * 1048576);
       const plants = [...loader.querySelectorAll('.je-plant')];
       const grow = (p) => {
         for (const g of plants) {
@@ -506,9 +506,10 @@
     });
 
     const jeWorldEl = document.getElementById('world');
-    /* The Living Soil story (worm → seed → plant → nutrients → sheep) is a scroll-driven
-       SVG overlay above the film; the engine feeds it the band geometry every read. */
-    const jeSoil = window.mountSoilStory ? mountSoilStory(jeWorldEl, { sectionId: 'suelo', startAt: 0.22 }) : null;
+    /* The Living Soil is real footage now (Kling 3.0 reshoot: worm → seed → plant →
+       sheep → back to the roots). soil-story.js only adds the nutrient labels and the
+       closing line, welded to the clip's time; the engine feeds it every read. */
+    const jeSoil = window.mountSoilStory ? mountSoilStory(jeWorldEl, { sectionId: 'suelo', duration: 38.10 }) : null;
     window.jeSoil = jeSoil;
     window.jeWorld = mountScrollWorld(jeWorldEl, {
       brand: { name: 'Juntos Earth', href: '#top' },
@@ -536,14 +537,15 @@
           clip: 'assets/vid/suelo.mp4',
           clipMobile: 'assets/vid/suelo-m.mp4',
           accent: '#D2E18B',
-          /* 4.4 viewport-heights: the clip dives underground in the first 22% of the band
-             (frame 0.56 = inside the trench) and then crawls through the root macro while
-             the soil story plays on top (soil-story.js starts at that same 0.22). */
-          scroll: 4.4,
-          curve: [[0, 0], [0.22, 0.56], [0.5, 0.72], [1, 1]],
+          /* 38.1 s clip (dive → worm & seed → up to the pasture → the sheep eats the
+             plant → back down to the roots). 5.6 viewport-heights keeps the film's pacing
+             (~6.8 s of footage per viewport-height, like every other scene).
+             Encoded at 1440x956 all-intra crf 23 to stay under the 100 MB per-file
+             limit of GitHub and Vercel; the stage scales it with object-fit: cover. */
+          scroll: 5.6,
           eyebrow: 'The magic is underground',
           title: 'Healthy soil is the whole point.',
-          body: 'Worms, fungi and roots rebuild carbon-rich living soil. Keep scrolling: a seed becomes the pasture our flock eats.',
+          body: 'Worms, fungi and roots rebuild carbon-rich living soil. Watch a seed become the pasture our flock eats.',
           tags: ['Living soil', 'Pasture-raised'],
         },
         {
@@ -621,7 +623,7 @@
          `scroll` changes or the phone URL bar resizes the viewport. */
       const HERO = [
         null,                    /* The Farm → very top: crisp establishing still */
-        0.4,                     /* The Living Soil: plant grown, labels up, before the sheep */
+        0.6,                     /* The Living Soil: plant at the surface, the sheep arriving */
         0.5,                     /* The Kitchen */
         0.5,                     /* Across Europe */
         0.5,                     /* The Whole World */

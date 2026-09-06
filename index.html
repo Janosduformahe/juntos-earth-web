@@ -478,6 +478,7 @@
   </script>
   <script src="assets/vendor/lenis.min.js"></script>
   <script src="scrub-engine.js"></script>
+  <script src="soil-story.js"></script>
   <script>
     /* Mount only after the preloader has the whole film cached (resolves immediately
        under prefers-reduced-motion or on preload failure). */
@@ -504,8 +505,14 @@
       window.jeScroll(a.getAttribute('href') === '#top' ? 0 : el);
     });
 
-    mountScrollWorld(document.getElementById('world'), {
+    const jeWorldEl = document.getElementById('world');
+    /* The Living Soil story (worm → seed → plant → nutrients → sheep) is a scroll-driven
+       SVG overlay above the film; the engine feeds it the band geometry every read. */
+    const jeSoil = window.mountSoilStory ? mountSoilStory(jeWorldEl, { sectionId: 'suelo', startAt: 0.22 }) : null;
+    window.jeSoil = jeSoil;
+    window.jeWorld = mountScrollWorld(jeWorldEl, {
       brand: { name: 'Juntos Earth', href: '#top' },
+      onRead: (st) => { if (jeSoil) jeSoil.update(st); },
       hint: 'scroll to leave the ground',
       diveScroll: 1.4,
       eagerLoad: true,             /* preloader already warmed the cache — build all clips up front */
@@ -529,11 +536,15 @@
           clip: 'assets/vid/suelo.mp4',
           clipMobile: 'assets/vid/suelo-m.mp4',
           accent: '#D2E18B',
-          scroll: 1.4, focus: 0.6,    /* quicken the earth-entry morph, dwell on the macro world */
+          /* 4.4 viewport-heights: the clip dives underground in the first 22% of the band
+             (frame 0.56 = inside the trench) and then crawls through the root macro while
+             the soil story plays on top (soil-story.js starts at that same 0.22). */
+          scroll: 4.4,
+          curve: [[0, 0], [0.22, 0.56], [0.5, 0.72], [1, 1]],
           eyebrow: 'The magic is underground',
           title: 'Healthy soil is the whole point.',
-          body: 'Roots, fungi and grazing flocks rebuild carbon-rich living soil — the quiet engine behind everything we make.',
-          tags: ['Pasture-raised', 'Carbon-rich soil'],
+          body: 'Worms, fungi and roots rebuild carbon-rich living soil. Keep scrolling: a seed becomes the pasture our flock eats.',
+          tags: ['Living soil', 'Pasture-raised'],
         },
         {
           id: 'obrador', label: 'The Kitchen',
@@ -605,20 +616,24 @@
        shows the sun flare). Intercept nav/rail clicks in capture phase and send each
        one to its scene's hero moment instead. Also append the post-film sections. */
     (function () {
-      const BANDS = [            /* [startVh, widthVh, fraction-of-band] */
-        [0,   1.8, null],        /* The Farm → very top: crisp establishing still */
-        /* With per-section `focus` remaps, mid-band IS each scene's hero moment
-           (kitchen scroll 1.9 / europa 1.5 shift the later bands). */
-        [1.8, 1.4, 0.5],         /* The Living Soil */
-        [3.2, 1.9, 0.5],         /* The Kitchen */
-        [5.1, 1.5, 0.5],         /* Across Europe */
-        [6.6, 1.5, 0.5],         /* The Whole World */
-        [8.1, 2.0, 0.5],         /* The Broth */
+      /* Fraction of each band to land on. Band geometry comes from the engine's own
+         layout (window.jeWorld.sections[i]._seg), so it stays right when a scene's
+         `scroll` changes or the phone URL bar resizes the viewport. */
+      const HERO = [
+        null,                    /* The Farm → very top: crisp establishing still */
+        0.4,                     /* The Living Soil: plant grown, labels up, before the sheep */
+        0.5,                     /* The Kitchen */
+        0.5,                     /* Across Europe */
+        0.5,                     /* The Whole World */
+        0.5,                     /* The Broth */
       ];
       const targetFor = (i) => {
-        const [s, w, f] = BANDS[i];
-        return f === null ? 0 : Math.round((s + w * f) * innerHeight);
+        const f = HERO[i];
+        if (f === null) return 0;
+        const seg = window.jeWorld && window.jeWorld.sections[i] && window.jeWorld.sections[i]._seg;
+        return seg ? Math.round(seg.start + (seg.end - seg.start) * f) : 0;
       };
+      const BANDS = HERO;
       /* After a nav jump the copy would be half-faded (it only peaks mid-band), which
          reads as "blurry text". Force the target section's copy fully visible for a
          few seconds; any further scroll hands control back to the engine. */
@@ -678,15 +693,20 @@
       }
       const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
       const ease = (t) => 0.5 - 0.5 * Math.cos(Math.PI * clamp(t, 0, 1));
-      /* Film-finale hold: past the caldo band start (sections scroll: 1.8+1.4+1.6+1.4+1.5
-         = 7.7vh; +0.5 = safely inside the last scene), pin its frame via the CSS above. */
+      /* Film-finale hold: once safely inside the last scene's band (its start + 0.5vh),
+         pin its frame via the CSS above. The band start comes from the engine's layout
+         (window.jeWorld) so it follows any per-scene `scroll` change. */
       const world = document.getElementById('world');
+      const holdAt = (vh) => {
+        const w = window.jeWorld, s = w && w.sections[w.sections.length - 1];
+        return s && s._seg ? s._seg.start + 0.5 * vh : 11.6 * vh;
+      };
       // pack sits OPPOSITE each card: card left → pack right (+), card right → pack left (−)
       const sideOf = (i) => (steps[i].dataset.side === 'left' ? 1 : -1);
       let cur = { x: 0, r: 0, bo: 0 };
       function frame() {
         const vh = innerHeight;
-        world.classList.toggle('je-hold', scrollY > 8.6 * vh);   /* inside the caldo band [8.1, 10.1] */
+        world.classList.toggle('je-hold', scrollY > holdAt(vh));   /* inside the caldo band */
         const rect = scrolly.getBoundingClientRect();
         world.classList.toggle('je-copy-off', rect.top < vh * 0.5);
         const total = rect.height - vh;

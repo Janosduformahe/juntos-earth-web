@@ -21,12 +21,23 @@
            linger: 0.5,   // optional 0..1 — remaps time so the camera settles mid-scene
                           // (exactly where the copy peaks) and moves quicker at the
                           // edges. 0 = linear (default). Keep ≤ 0.6; 1 = full pause.
+           curve: [[0,0],[0.22,0.56],[1,1]],
+                          // optional explicit scroll→time remap: monotone [bandFraction,
+                          // clipFraction] points, linear in between. Wins over focus/linger.
+                          // Lets a scene reach a frame early and crawl through the rest
+                          // while an overlay (see soil-story.js) tells its story.
            eyebrow, title, body, tags:[…],
            cta:{ primary:{label,href}, secondary:{label,href} } }, // last section only
          …
        ],
        connectors: [clipUrl, …],          // length = sections.length - 1 (nulls allowed)
        connectorsMobile: [clipUrl, …],    // optional lighter connectors for phones (same length)
+       onRead: (state) => {},             // optional: called after every scroll read with
+                                          // { y, vh, sections, active } — drive overlays from
+                                          // each section's _seg.start/_seg.end band.
+     });
+     // returns { sections, segments, layout, read, jumpTo } so the page can derive band
+     // geometry from the engine instead of duplicating the scroll table.
 
    MOBILE (the clipMobile/connectorsMobile variants are the opt-in mobile version;
    the rest of the phone handling below is always on)
@@ -87,7 +98,8 @@ function mountScrollWorld(container, config) {
   const SEGMENTS = [];
   SECTIONS.forEach((s, i) => {
     const dive = { kind: 'dive', si: i, clip: s.clip, clipM: s.clipMobile, still: s.still, stillM: s.stillMobile,
-                   accent: s.accent, w: s.scroll || DIVE_W, linger: s.linger || 0, focus: (s.focus != null ? s.focus : null) };
+                   accent: s.accent, w: s.scroll || DIVE_W, linger: s.linger || 0, focus: (s.focus != null ? s.focus : null),
+                   curve: (Array.isArray(s.curve) && s.curve.length >= 2) ? s.curve : null };
     SEGMENTS.push(dive);
     s._seg = dive;
     // A connector is optional: if connectors[i] is falsy, the two dives simply
@@ -186,6 +198,14 @@ function mountScrollWorld(container, config) {
     if (x <= 0.5) { const u = 1 - 2 * x; return F * (1 - u * u); }
     const u = 2 * x - 1; return F + (1 - F) * u * u;
   };
+  // Explicit piecewise-linear remap through [bandFraction, clipFraction] points.
+  const curveEase = (x, pts) => {
+    for (let k = 1; k < pts.length; k++) {
+      const x0 = pts[k - 1][0], t0 = pts[k - 1][1], x1 = pts[k][0], t1 = pts[k][1];
+      if (x <= x1) return t0 + (t1 - t0) * clamp((x - x0) / Math.max(1e-6, x1 - x0));
+    }
+    return pts[pts.length - 1][1];
+  };
   let vh = window.innerHeight, stageX = 0, totalW = 0, activeIndex = -1, ticking = false;
   let laidOutW = window.innerWidth;   // width the current layout was computed at (see onResize)
 
@@ -249,7 +269,8 @@ function mountScrollWorld(container, config) {
       const s = SEGMENTS[i];
       if (y > s.start - 1.6 * vh && y < s.end + 1.6 * vh) loadClip(s);
       const local = clamp((y - s.start) / (s.end - s.start), 0, 1);
-      s.target = s.focus != null ? focusEase(local, s.focus) : (s.linger ? lingerEase(local, s.linger) : local);
+      s.target = s.curve ? curveEase(local, s.curve)
+        : s.focus != null ? focusEase(local, s.focus) : (s.linger ? lingerEase(local, s.linger) : local);
       let outside = 0;
       if (y < s.start) outside = s.start - y; else if (y > s.end) outside = y - s.end;
       const op = smooth(1 - outside / fade);
@@ -287,6 +308,7 @@ function mountScrollWorld(container, config) {
     scrollbarFill.style.transform = `scaleX(${clamp(y / (totalW * vh))})`;
     hint.style.opacity = clamp(1 - y / (0.5 * vh));
     if (particles) particles.style.transform = `translate3d(0, ${-y * 0.05}px, 0)`;
+    if (typeof config.onRead === 'function') config.onRead({ y, vh, sections: SECTIONS, active: activeIndex });
     ticking = false;
   }
 
@@ -362,6 +384,8 @@ function mountScrollWorld(container, config) {
   // first scroll pass then scrubs warm decoders instead of half-built blobs.
   if (config.eagerLoad && !reduce) SEGMENTS.forEach(loadClip);
   requestAnimationFrame(raf);
+
+  return { sections: SECTIONS, segments: SEGMENTS, layout, read, jumpTo };
 
   // ---- helpers ----
   function el(tag, cls) { const n = document.createElement(tag); if (cls) n.className = cls; return n; }

@@ -8,3 +8,10 @@ __pycache__/
 
 .vercel
 .env*
+
+# HyperFrames video projects: keep the composition source, not the heavy media
+videos/*/assets/*.mp4
+videos/*/renders/
+videos/*/snapshots/
+videos/*/render.log
+videos/*/node_modules/

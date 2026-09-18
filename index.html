@@ -149,7 +149,94 @@
       <p class="je-nutri__note">Warm it, sip it, cook with it — breakfast broth is a personality trait now.</p>
     </section>
 
-    <!-- Shop: swap the href placeholders for your real Shopify product URLs.
+    <!-- The evidence. Rules we held ourselves to: every figure comes from the numbered
+         paper under it, quoted from that paper's own abstract; nothing here claims our
+         product was studied; where the honest answer is "less than you'd hope", we print
+         that instead of borrowing a supplement trial's number. The spine is drawn by
+         evidence.js through the real node positions as you scroll. -->
+    <section class="je-ev" id="science" aria-labelledby="je-ev-title">
+      <div class="je-ev__head">
+        <p class="je-nutri__eyebrow">The evidence</p>
+        <h2 class="je-ev__title" id="je-ev-title">What the science says.<br />And what it doesn't.</h2>
+        <p class="je-ev__lead">Most of this aisle prints numbers borrowed from supplement trials. We went and read those trials. Below is what they actually measured, what a pot of broth can and cannot honestly claim, and where the evidence under our feet is genuinely strong. Every source is named and linked.</p>
+      </div>
+
+      <div class="je-ev__spine" id="jeEvSpine">
+        <svg class="je-ev__line" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="jeEvGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#A5BC39" /><stop offset=".5" stop-color="#D2E18B" /><stop offset="1" stop-color="#F8DB3F" />
+            </linearGradient>
+          </defs>
+          <path class="je-ev__track" fill="none" />
+          <path class="je-ev__draw" fill="none" />
+        </svg>
+        <ol class="je-ev__items">
+          <li class="je-ev__divider" aria-hidden="true"><span>In the cup</span></li>
+          <li class="je-ev__item" data-side="right" style="--je-c: #A5BC39">
+            <span class="je-ev__node" aria-hidden="true"></span>
+            <div class="je-ev__card">
+              <strong class="je-ev__num">1 in 3</strong>
+              <h3 class="je-ev__claim">amino acids in collagen is glycine</h3>
+              <p class="je-ev__body">Collagen is built from a repeating three-letter pattern, and roughly one residue in every three is glycine, the smallest amino acid there is. It is what a long simmer coaxes out of bone and connective tissue. How much of it reaches your cup depends entirely on the bones, the ratio and the hours.</p>
+              <p class="je-ev__meta"><span class="je-ev__chip">Lab analysis of bovine collagen</span><a class="je-ev__ref" href="#je-ref-1" aria-label="Reference 1"><sup>1</sup></a></p>
+            </div>
+          </li>
+          <li class="je-ev__item" data-side="left" style="--je-c: #F8DB3F">
+            <span class="je-ev__node" aria-hidden="true"></span>
+            <div class="je-ev__card">
+              <strong class="je-ev__num" data-to="20" data-decimals="0" data-prefix="" data-suffix=" g">20 g</strong>
+              <h3 class="je-ev__claim">The collagen dose broth does not match</h3>
+              <p class="je-ev__body">Nearly every collagen headline you have read comes from trials using around 20 g of isolated collagen peptides. When researchers assayed bone broth against that reference dose, the broth came in significantly lower in all six collagen amino acids they measured. Broth is food, not a dose, and we are not going to dress it up as one.</p>
+              <p class="je-ev__meta"><span class="je-ev__chip">Amino-acid assay · broth vs 20 g reference</span><a class="je-ev__ref" href="#je-ref-2" aria-label="Reference 2"><sup>2</sup></a></p>
+            </div>
+          </li>
+          <li class="je-ev__item" data-side="right" style="--je-c: #56AAE8">
+            <span class="je-ev__node" aria-hidden="true"></span>
+            <div class="je-ev__card">
+              <strong class="je-ev__num">&lt;5%</strong>
+              <h3 class="je-ev__claim">of your daily calcium and magnesium, per serving</h3>
+              <p class="je-ev__body">Simmering bones does pull minerals into the water, and more of them the longer and more acidic the pot. Measured in home-made and commercial broths, it still lands under five per cent of daily needs per serving. Which is why you will not find a mineral claim on our pouch.</p>
+              <p class="je-ev__meta"><span class="je-ev__chip">Lab extraction + commercial broths</span><a class="je-ev__ref" href="#je-ref-3" aria-label="Reference 3"><sup>3</sup></a></p>
+            </div>
+          </li>
+          <li class="je-ev__divider" aria-hidden="true"><span>In the ground</span></li>
+          <li class="je-ev__item" data-side="left" style="--je-c: #D2E18B">
+            <span class="je-ev__node" aria-hidden="true"></span>
+            <div class="je-ev__card">
+              <strong class="je-ev__num" data-to="2.0" data-decimals="1" data-prefix="+" data-suffix=" t/ha">+2.0 t/ha</strong>
+              <h3 class="je-ev__claim">more carbon held in organic topsoil</h3>
+              <p class="je-ev__body">Across 74 paired farm comparisons, organically managed topsoil held significantly more carbon than conventional. Two tonnes per hectare is the conservative figure, from farms importing no carbon from outside. It is a difference in stock built up over roughly fourteen years in the top 20 cm, not a yearly gain.</p>
+              <p class="je-ev__meta"><span class="je-ev__chip">Meta-analysis · 74 farm pairs · 0–20 cm</span><a class="je-ev__ref" href="#je-ref-4" aria-label="Reference 4"><sup>4</sup></a></p>
+            </div>
+          </li>
+          <li class="je-ev__item" data-side="right" style="--je-c: #FF913F">
+            <span class="je-ev__node" aria-hidden="true"></span>
+            <div class="je-ev__card">
+              <strong class="je-ev__num" data-to="78" data-decimals="0" data-prefix="+" data-suffix="%">+78%</strong>
+              <h3 class="je-ev__claim">more profit on regenerative fields, on 29% less grain</h3>
+              <p class="je-ev__body">Regenerative cornfields in the American Midwest earned 78% more than their conventional neighbours while producing 29% less grain. The gap came largely from price premiums, direct sales and livestock in the rotation rather than from the soil alone. A different crop on a different continent to ours, and worth showing whole rather than halved.</p>
+              <p class="je-ev__meta"><span class="je-ev__chip">18 US farms · corn only</span><a class="je-ev__ref" href="#je-ref-5" aria-label="Reference 5"><sup>5</sup></a></p>
+            </div>
+          </li>
+        </ol>
+      </div>
+
+      <div class="je-ev__refs">
+        <h3 class="je-ev__refstitle">References &amp; further reading</h3>
+        <ol class="je-ev__reflist">
+          <li id="je-ref-1"><span class="je-ev__refnum">1</span> Mittal A, Collins C, Madden L, Brunton N. Collagen from bovine omentum: extraction and characterization. <em>Foods</em>, 2025. <a href="https://doi.org/10.3390/foods15010044" target="_blank" rel="noopener noreferrer">10.3390/foods15010044</a></li>
+          <li id="je-ref-2"><span class="je-ev__refnum">2</span> Alcock RD, Shaw GC, Burke LM. Bone broth unlikely to provide reliable concentrations of collagen precursors compared with supplemental sources of collagen used in collagen research. <em>International Journal of Sport Nutrition and Exercise Metabolism</em>, 2019. <a href="https://doi.org/10.1123/ijsnem.2018-0139" target="_blank" rel="noopener noreferrer">10.1123/ijsnem.2018-0139</a></li>
+          <li id="je-ref-3"><span class="je-ev__refnum">3</span> Hsu DJ, Lee CW, Tsai WC, Chien YC. Essential and toxic metals in animal bone broths. <em>Food &amp; Nutrition Research</em>, 2017. <a href="https://doi.org/10.1080/16546628.2017.1347478" target="_blank" rel="noopener noreferrer">10.1080/16546628.2017.1347478</a></li>
+          <li id="je-ref-4"><span class="je-ev__refnum">4</span> Gattinger A, Muller A, Haeni M, et al. Enhanced top soil carbon stocks under organic farming. <em>Proceedings of the National Academy of Sciences</em>, 2012. <a href="https://doi.org/10.1073/pnas.1209429109" target="_blank" rel="noopener noreferrer">10.1073/pnas.1209429109</a></li>
+          <li id="je-ref-5"><span class="je-ev__refnum">5</span> LaCanne CE, Lundgren JG. Regenerative agriculture: merging farming and natural resource conservation profitably. <em>PeerJ</em>, 2018. <a href="https://doi.org/10.7717/peerj.4428" target="_blank" rel="noopener noreferrer">10.7717/peerj.4428</a></li>
+        </ol>
+        <p class="je-ev__disclaimer">None of these studies tested Juntos Earth broth, and none of them is a health claim about it. Two of them measure the composition of generic bone broths, one describes the collagen molecule, and two compare farming systems on other continents and other crops. Nothing on this page is medical advice or a promise about what our food will do for you: it is the reading behind how we cook and how we farm, published so you can check it. Evidence reviewed September 2026.</p>
+      </div>
+    </section>
+
+    <!-- Shop: product links point at the real store (juntosearth.com); swap in the
+         per-product handles once the Shopify storefront is public.
          Prices are placeholders too — set the real ones before launch. -->
     <section class="je-shop" id="shop" aria-label="Buy the broth">
       <p class="je-nutri__eyebrow">Straight from the farm</p>
@@ -164,7 +251,7 @@
           <p class="je-shop__flavour">Deep, herby and grounding — the original sipper for slow mornings.</p>
           <div class="je-shop__row">
             <span class="je-shop__price">8,50&nbsp;€</span>
-            <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/lamb-bone-broth">Buy now</a>
+            <a class="je-shop__buy" href="https://juntosearth.com" target="_blank" rel="noopener noreferrer">Buy now</a>
           </div>
         </article>
         <article class="je-shop__card">
@@ -175,7 +262,7 @@
           <p class="je-shop__flavour">Light, bright and ready anywhere — crack it open post-gym or mid-hike.</p>
           <div class="je-shop__row">
             <span class="je-shop__price">7,90&nbsp;€</span>
-            <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/chicken-bone-broth">Buy now</a>
+            <a class="je-shop__buy" href="https://juntosearth.com" target="_blank" rel="noopener noreferrer">Buy now</a>
           </div>
         </article>
         <article class="je-shop__card">
@@ -186,7 +273,7 @@
           <p class="je-shop__flavour">Rich, golden and gently spiced — the post-workout comfort cup.</p>
           <div class="je-shop__row">
             <span class="je-shop__price">8,50&nbsp;€</span>
-            <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/beef-bone-broth">Buy now</a>
+            <a class="je-shop__buy" href="https://juntosearth.com" target="_blank" rel="noopener noreferrer">Buy now</a>
           </div>
         </article>
       </div>
@@ -202,7 +289,7 @@
         </div>
         <div class="je-shop__bundle-buy">
           <span class="je-shop__price"><s>24,90&nbsp;€</s> 22,40&nbsp;€</span>
-          <a class="je-shop__buy" href="https://REPLACE-ME.myshopify.com/products/the-farm-trio">Get the trio</a>
+          <a class="je-shop__buy" href="https://juntosearth.com" target="_blank" rel="noopener noreferrer">Get the trio</a>
         </div>
       </aside>
       <ul class="je-shop__perks">
@@ -232,9 +319,12 @@
               <li><span>EP 03</span> Partners we trust — farming Europe's future</li>
             </ul>
             <div class="je-podcast__links">
-              <a href="#">Spotify</a>
-              <a href="#">Apple Podcasts</a>
-              <a href="#">YouTube</a>
+              <!-- No episodes are published yet, so these are labels, not links: an href="#"
+                   silently threw the visitor back to the top of the page. Swap each one for
+                   its real show URL when the podcast goes live. -->
+              <span class="je-podcast__pill" aria-disabled="true">Spotify</span>
+              <span class="je-podcast__pill" aria-disabled="true">Apple Podcasts</span>
+              <span class="je-podcast__pill" aria-disabled="true">YouTube</span>
               <span>First episodes coming soon</span>
             </div>
           </div>
@@ -318,6 +408,63 @@
       .je-step--intro .je-nutri__title { text-align: center; }
     }
 
+
+    /* --- the evidence: scroll-drawn spine, big figures, sources --- */
+    .je-ev { background: var(--sw-bg); color: var(--sw-ink); padding: clamp(3.5rem, 8vw, 7rem) clamp(1.2rem, 6vw, 5rem) clamp(3rem, 6vw, 5rem); }
+    .je-ev__head { max-width: 64ch; margin: 0 auto; text-align: center; }
+    .je-ev__head .je-nutri__eyebrow { color: #A5BC39; }
+    .je-ev__title { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(2rem, 4.6vw, 3.6rem); line-height: 1.04; letter-spacing: -.01em; margin: 14px 0 0; color: #FFFEF5; }
+    .je-ev__lead { margin: 20px auto 0; max-width: 58ch; font-size: clamp(1rem, 1.25vw, 1.12rem); line-height: 1.62; color: rgba(255, 254, 245, .74); }
+    .je-ev__spine { position: relative; max-width: 1080px; margin: clamp(2.5rem, 6vw, 4.5rem) auto 0; }
+    .je-ev__line { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+    .je-ev__track { stroke: rgba(255, 254, 245, .16); stroke-width: 2; vector-effect: non-scaling-stroke; }
+    .je-ev__draw { stroke: url(#jeEvGrad); stroke-width: 3.5; stroke-linecap: round; vector-effect: non-scaling-stroke; stroke-dasharray: 100; stroke-dashoffset: 100;
+      filter: drop-shadow(0 0 10px rgba(165, 188, 57, .35)); }
+    .je-ev__items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: clamp(2.5rem, 6vw, 5rem); }
+    /* The middle lane is wide and each node sits on ITS OWN side of it, so the spine
+       that evidence.js draws through the real node centres snakes instead of running
+       straight down. */
+    .je-ev__item { position: relative; display: grid; grid-template-columns: 1fr 148px 1fr; column-gap: clamp(18px, 2.6vw, 36px); align-items: center; }
+    .je-ev__item[data-side="left"] .je-ev__node { justify-self: start; }
+    .je-ev__item[data-side="right"] .je-ev__node { justify-self: end; }
+    .je-ev__node { grid-column: 2; justify-self: center; width: 16px; height: 16px; border-radius: 50%; background: var(--je-c, #A5BC39);
+      box-shadow: 0 0 0 5px color-mix(in srgb, var(--je-c, #A5BC39) 22%, transparent), 0 0 24px color-mix(in srgb, var(--je-c, #A5BC39) 55%, transparent);
+      opacity: var(--je-ev-on, 0); transform: scale(calc(.35 + .65 * var(--je-ev-on, 0))); will-change: transform, opacity; }
+    .je-ev__card { opacity: var(--je-ev-on, 0); transform: translateY(calc((1 - var(--je-ev-on, 0)) * 26px)); will-change: transform, opacity; max-width: 42ch; }
+    .je-ev__item[data-side="left"] .je-ev__card { grid-column: 1; grid-row: 1; justify-self: end; text-align: right; }
+    .je-ev__item[data-side="right"] .je-ev__card { grid-column: 3; grid-row: 1; justify-self: start; }
+    .je-ev__num { display: block; font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(2.4rem, 5.6vw, 4.2rem); line-height: 1; letter-spacing: -.03em; color: var(--je-c, #A5BC39); font-variant-numeric: tabular-nums; }
+    .je-ev__claim { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(1.1rem, 1.7vw, 1.4rem); line-height: 1.2; margin: 12px 0 0; color: #FFFEF5; }
+    .je-ev__body { margin: 10px 0 0; font-size: clamp(.94rem, 1.1vw, 1.02rem); line-height: 1.6; color: rgba(255, 254, 245, .72); }
+    .je-ev__meta { display: flex; align-items: center; gap: 8px; margin: 14px 0 0; flex-wrap: wrap; }
+    .je-ev__item[data-side="left"] .je-ev__meta { justify-content: flex-end; }
+    .je-ev__chip { font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: color-mix(in srgb, var(--je-c, #A5BC39) 78%, #FFFEF5);
+      border: 1px solid color-mix(in srgb, var(--je-c, #A5BC39) 40%, transparent); background: color-mix(in srgb, var(--je-c, #A5BC39) 12%, transparent); padding: 5px 11px; border-radius: 999px; }
+    .je-ev__ref { color: rgba(255, 254, 245, .55); text-decoration: none; font-size: .8rem; transition: color .2s; }
+    .je-ev__ref:hover, .je-ev__ref:focus-visible { color: #F8DB3F; }
+    .je-ev__divider { display: flex; align-items: center; gap: 16px; color: rgba(255, 254, 245, .42); font-family: var(--sw-font-display); font-weight: 700;
+      font-size: .78rem; letter-spacing: .2em; text-transform: uppercase; margin: clamp(.5rem, 2vw, 1.5rem) 0; }
+    .je-ev__divider::before, .je-ev__divider::after { content: ""; flex: 1; height: 1px; background: rgba(255, 254, 245, .14); }
+    .je-ev__refs { max-width: 1080px; margin: clamp(3rem, 7vw, 6rem) auto 0; border-top: 1px solid rgba(255, 254, 245, .14); padding-top: clamp(1.6rem, 3vw, 2.6rem); }
+    .je-ev__refstitle { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(1.1rem, 1.6vw, 1.35rem); margin: 0 0 18px; color: #FFFEF5; }
+    .je-ev__reflist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+    .je-ev__reflist li { font-size: .84rem; line-height: 1.5; color: rgba(255, 254, 245, .6); scroll-margin-top: 90px; }
+    .je-ev__reflist li:target { color: rgba(255, 254, 245, .92); }
+    .je-ev__refnum { font-family: ui-monospace, Menlo, monospace; font-size: .72rem; color: #F8DB3F; margin-right: 6px; }
+    .je-ev__reflist a { color: #D2E18B; word-break: break-word; }
+    .je-ev__disclaimer { margin: clamp(1.6rem, 3vw, 2.4rem) 0 0; font-size: .78rem; line-height: 1.6; color: rgba(255, 254, 245, .45); max-width: 78ch; }
+    @media (max-width: 860px) {
+      .je-ev__item { grid-template-columns: 26px 1fr; column-gap: 16px; align-items: start; }
+      .je-ev__node { grid-column: 1; justify-self: start; margin-top: 14px; }
+      .je-ev__item[data-side="left"] .je-ev__card,
+      .je-ev__item[data-side="right"] .je-ev__card { grid-column: 2; grid-row: 1; justify-self: start; text-align: left; max-width: none; }
+      .je-ev__item[data-side="left"] .je-ev__meta { justify-content: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .je-ev__node, .je-ev__card { opacity: 1 !important; transform: none !important; }
+      .je-ev__draw { stroke-dashoffset: 0 !important; }
+    }
+
     .je-shop { background: #FFFEF5; color: #0A2E19; text-align: center; padding: clamp(3rem, 7vw, 6rem) clamp(1.2rem, 6vw, 5rem); border-top: 1.5px solid rgba(10, 46, 25, .07); }
     .je-shop__title { font-family: var(--sw-font-display); font-weight: 700; font-size: clamp(2rem, 4.2vw, 3.2rem); line-height: 1.05; margin: 14px 0 0; }
     .je-shop__lead { max-width: 54ch; margin: 16px auto 0; font-size: clamp(1rem, 1.25vw, 1.12rem); line-height: 1.6; color: rgba(10, 46, 25, .72); }
@@ -363,7 +510,8 @@
     .je-podcast__links { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
     .je-podcast__links a { text-decoration: none; font-size: .84rem; font-weight: 600; color: #FFFEF5; border: 1.5px solid rgba(255, 254, 245, .3); padding: 8px 16px; border-radius: 999px; transition: background .2s, transform .2s; }
     .je-podcast__links a:hover { background: rgba(255, 254, 245, .12); transform: translateY(-2px); }
-    .je-podcast__links span { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 254, 245, .45); margin-left: 4px; }
+    .je-podcast__pill { font-size: .84rem; font-weight: 600; color: rgba(255, 254, 245, .55); border: 1.5px dashed rgba(255, 254, 245, .22); padding: 8px 16px; border-radius: 999px; cursor: default; }
+    .je-podcast__links span:not(.je-podcast__pill) { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 254, 245, .45); margin-left: 4px; }
 
     .je-footer { background: var(--sw-bg); color: var(--sw-ink); padding: clamp(4rem, 8vw, 7rem) clamp(1.2rem, 6vw, 5rem) calc(2rem + env(safe-area-inset-bottom)); }
     .je-footer__grid { display: grid; grid-template-columns: minmax(0, 420px) minmax(0, 1fr); gap: clamp(2rem, 6vw, 5rem); align-items: center; max-width: 1100px; margin: 0 auto; }
@@ -479,6 +627,12 @@
   <script src="assets/vendor/lenis.min.js"></script>
   <script src="scrub-engine.js"></script>
   <script src="soil-story.js"></script>
+  <script src="evidence.js"></script>
+  <script>
+    /* Mounted outside the film's preload gate on purpose: this section is text and
+       vectors, so it is readable and scrubbable long before the clips land. */
+    if (window.mountEvidence) mountEvidence();
+  </script>
   <script>
     /* Mount only after the preloader has the whole film cached (resolves immediately
        under prefers-reduced-motion or on preload failure). */
@@ -664,7 +818,7 @@
       }, true);
       const nav = document.querySelector('#world .sw-nav');
       if (nav) {
-        [["What's Inside", '#inside'], ['Shop', '#shop'], ['Podcast', '#podcast']].forEach(([label, sel]) => {
+        [["What's Inside", '#inside'], ['Science', '#science'], ['Shop', '#shop'], ['Podcast', '#podcast']].forEach(([label, sel]) => {
           const b = document.createElement('button');
           b.className = 'sw-nav__item'; b.dataset.je = '1'; b.textContent = label;
           b.addEventListener('click', () => window.jeScroll(document.querySelector(sel)));
